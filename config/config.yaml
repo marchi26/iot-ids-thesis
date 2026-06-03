@@ -1,0 +1,40 @@
+dataset:
+  raw_dir: data/raw
+  raw_file: data/raw/train_test_network.csv
+  processed_dir: data/processed
+  binary_target: label
+  multiclass_target: type
+
+experiment:
+  classification_mode: binary
+  test_size: 0.2
+  random_seed: 42
+
+preprocessing:
+  scale_numeric: true
+  save_processed: false
+  apply_smote: false
+
+extended:
+  max_train_samples: 30000
+  tuning_max_train_samples: 30000
+  tuning_n_iter: 6
+  tuning_cv_folds: 3
+
+interpretability:
+  enabled: true
+  max_train_samples: 30000
+  shap_sample_size: 1000
+  top_features: 25
+
+deployment:
+  enabled: true
+  max_train_samples: 30000
+  compression_level: 3
+
+outputs:
+  metrics_dir: results/metrics
+  plots_dir: results/plots
+  models_dir: results/models
+  logs_dir: results/logs
+  save_models: false
