@@ -1,0 +1,34 @@
+services:
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./simulation_mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+
+  iot-device:
+    image: python:3.11-slim
+    depends_on:
+      - mqtt-broker
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "pip install paho-mqtt && python src/simulation/iot_device_simulator.py --host mqtt-broker"
+
+  traffic-collector:
+    image: python:3.11-slim
+    depends_on:
+      - mqtt-broker
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "pip install paho-mqtt && python src/simulation/traffic_collector.py --host mqtt-broker --output results/metrics/simulated_iot_traffic.csv"
+
+  attack-simulator:
+    image: python:3.11-slim
+    depends_on:
+      - mqtt-broker
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: sh -c "pip install paho-mqtt && python src/simulation/attack_simulator.py --host mqtt-broker"
