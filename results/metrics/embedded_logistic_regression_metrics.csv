@@ -1,0 +1,2 @@
+model,mode,features,accuracy,precision,recall,f1_score,macro_f1,weighted_f1,training_time_seconds,inference_time_seconds,test_samples,feature_count,quantization_scale,header_path
+embedded_logistic_regression,binary,src_port|dst_port|duration|src_bytes|dst_bytes|missed_bytes|src_pkts|src_ip_bytes|dst_pkts|dst_ip_bytes,0.8179772086521832,0.8322405852072609,0.9537085907665559,0.8888438779496232,0.6933270961746285,0.7962016538860374,0.5714400000288151,0.0076070999493822455,42209,10,4011.431714665118,wokwi/ids_esp32/include/embedded_model.h
