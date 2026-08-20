@@ -14,7 +14,7 @@ Nella classificazione multiclasse, LightGBM ha ottenuto la migliore accuracy bas
 
 Il confronto con SMOTE non mostra un miglioramento generalizzato. Nel caso binario, Random Forest senza SMOTE ha ottenuto Macro F1 pari a 0.9974, superiore al valore con SMOTE pari a 0.9969. Nel caso multiclasse, LightGBM con SMOTE ha mostrato un leggero incremento di Macro F1 rispetto alla versione senza SMOTE, ma la differenza è contenuta. Pertanto, non è possibile concludere che SMOTE migliori sistematicamente le prestazioni in questo scenario.
 
-Il tuning iperparametrico, eseguito con 6 iterazioni e 3 fold, non ha prodotto un vantaggio netto rispetto alla baseline completa. Questo non dimostra l'inutilità del tuning, ma segnala che lo spazio di ricerca adottato è ancora limitato e che il campionamento del training set riduce la comparabilità diretta con la baseline. Una ricerca più ampia, eventualmente con Optuna, potrebbe essere valutata in una fase successiva.
+Il tuning iperparametrico, eseguito con 6 iterazioni e 3 fold, non ha prodotto un vantaggio netto rispetto alla baseline completa. Questo non dimostra l'inutilità del tuning, ma segnala che lo spazio di ricerca adottato è limitato e che il campionamento del training set riduce la comparabilità diretta con la baseline. Ai fini di questo lavoro si è quindi privilegiata una ricerca riproducibile e sostenibile, documentandone esplicitamente il perimetro computazionale.
 
 MLPClassifier ha prodotto risultati inferiori rispetto ai migliori modelli ensemble, soprattutto nella classificazione multiclasse. Isolation Forest, essendo un metodo non supervisionato di anomaly detection, ha ottenuto prestazioni sensibilmente inferiori ai classificatori supervisionati nel caso binario.
 
@@ -22,7 +22,7 @@ MLPClassifier ha prodotto risultati inferiori rispetto ai migliori modelli ensem
 
 I modelli ensemble, in particolare LightGBM, Random Forest e XGBoost, offrono prestazioni elevate ma sono meno immediatamente interpretabili rispetto a Logistic Regression. In un contesto IoT reale, questo compromesso è rilevante: un IDS deve essere accurato, ma anche verificabile, manutenibile e compatibile con i vincoli operativi dell'infrastruttura.
 
-È stata aggiunta una prima analisi di interpretabilità basata sulle importanze delle feature del modello LightGBM. Il runner è predisposto per SHAP quando la libreria è disponibile, mentre in questa esecuzione locale è stata usata l'importanza normalizzata esposta dal modello. Nel caso binario emergono feature legate a porte, durata della connessione e volume di byte/pacchetti; questa indicazione è utile per orientare un'analisi successiva, ma non sostituisce una spiegazione causale del traffico malevolo.
+L'analisi SHAP globale sul modello LightGBM evidenzia, nel caso binario, il peso di porta di destinazione, protocollo TCP/UDP, stato della connessione e numero di pacchetti sorgente. Nel caso multiclasse assumono rilievo anche porta sorgente, byte IP sorgente e durata. La convergenza di entrambe le analisi su caratteristiche strutturali del flusso rende le spiegazioni coerenti con il dominio di rete. I valori SHAP quantificano il contributo medio delle feature alle predizioni del modello, ma non devono essere interpretati come prova di causalità.
 
 Logistic Regression è più interpretabile e veloce in inferenza, ma i risultati sperimentali mostrano una riduzione significativa delle prestazioni, soprattutto nel caso multiclasse. La scelta del modello deve quindi considerare il bilanciamento tra accuratezza, latenza, risorse disponibili e necessità di spiegabilità.
 
@@ -30,7 +30,7 @@ Logistic Regression è più interpretabile e veloce in inferenza, ma i risultati
 
 L'analisi di deployment basata su Joblib mostra che la compressione riduce in modo significativo la dimensione degli artefatti LightGBM: da 2.09 MB a 0.85 MB nel caso binario e da 17.20 MB a 7.34 MB nel caso multiclasse. Questa analisi è utile come primo passo verso una discussione sul deployment, ma non equivale a una quantizzazione per microcontrollori.
 
-Per una valutazione più vicina a un ambiente embedded sarebbe necessario esportare il modello in un formato compatibile con il target, misurare memoria occupata, tempo di inferenza e consumo su un ambiente simulato o reale. L'eventuale uso di Wokwi o di dispositivi del laboratorio potrebbe estendere questa parte della tesi.
+Per avvicinare la valutazione a un ambiente embedded è stato esportato un modello lineare compatto in un formato direttamente incorporabile nel firmware. Le misure di memoria effettiva e consumo energetico restano proprie di una successiva validazione su hardware fisico e non vengono inferite dalla simulazione.
 
 È stato predisposto un dimostratore Wokwi basato su ESP32 e su un modello Logistic Regression quantizzato. Questa scelta riduce la complessità rispetto ai modelli ensemble e consente di incorporare direttamente i coefficienti nel firmware. Le prestazioni sono inferiori rispetto alla baseline LightGBM, ma il risultato è utile per discutere il compromesso tra accuratezza, semplicità del modello e portabilità su dispositivi IoT.
 

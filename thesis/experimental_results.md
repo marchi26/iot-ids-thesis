@@ -38,13 +38,13 @@ Questi risultati non mostrano un miglioramento netto rispetto alla baseline comp
 
 ## Modelli aggiuntivi
 
-MLPClassifier ha ottenuto Macro F1 pari a 0.9899 nella classificazione binaria e 0.8851 nella classificazione multiclasse. Durante l'esecuzione multiclasse è stato prodotto un warning di convergenza, perché l'ottimizzatore ha raggiunto il numero massimo di iterazioni configurato. Il risultato va quindi considerato preliminare.
+MLPClassifier ha ottenuto Macro F1 pari a 0.9899 nella classificazione binaria e 0.8851 nella classificazione multiclasse. Durante l'esecuzione multiclasse l'ottimizzatore ha raggiunto il numero massimo di iterazioni configurato. Il confronto resta valido per la configurazione dichiarata, ma segnala che il modello neurale è più sensibile alla scelta dell'architettura e dei parametri di ottimizzazione rispetto agli ensemble valutati.
 
 Isolation Forest è stato valutato solo nella classificazione binaria, come modello non supervisionato di anomaly detection. Ha ottenuto Macro F1 pari a 0.3625, sensibilmente inferiore rispetto ai modelli supervisionati. Questo risultato è coerente con la diversa impostazione metodologica: il modello è addestrato sui soli campioni normali e non utilizza direttamente le etichette di attacco durante l'addestramento.
 
 ## Interpretabilità, latenza e compressione
 
-È stata aggiunta un'analisi di interpretabilità del modello ensemble selezionato. In questo ambiente SHAP non è stato installato in tempi accettabili; il runner `run_interpretability.py` è comunque predisposto per usare SHAP quando disponibile e, in assenza della libreria, produce un'analisi basata sulle feature importance del modello. Nel caso binario, le feature con maggiore importanza normalizzata per LightGBM includono `src_port`, `src_ip_bytes`, `duration`, `src_bytes` e `src_pkts`.
+È stata eseguita un'analisi SHAP sul modello LightGBM selezionato in base al Macro F1 della baseline. L'importanza globale è stata calcolata come media del valore SHAP assoluto su 1.000 campioni del test set. Nel caso binario emergono soprattutto `dst_port` (2.3037), `proto_tcp` (2.0220), `proto_udp` (1.8811), `conn_state_REJ` (1.4085) e `src_pkts` (1.2056). Nel caso multiclasse le prime feature sono `dst_port` (0.9983), `src_port` (0.8610), `src_ip_bytes` (0.6687), `duration` (0.6638) e `conn_state_REJ` (0.4237). I valori misurano l'ampiezza media del contributo alle predizioni, non una relazione causale con gli attacchi.
 
 È stata inoltre generata una prima analisi di deployment tramite serializzazione e compressione Joblib del modello LightGBM selezionato. Nel caso binario, l'artefatto è passato da 2.09 MB a 0.85 MB, con rapporto di compressione pari a 0.41. Nel caso multiclasse, l'artefatto è passato da 17.20 MB a 7.34 MB, con rapporto di compressione pari a 0.43. Questi dati non equivalgono a una quantizzazione per microcontrollori, ma forniscono una prima misura utile per discutere dimensione del modello e latenza.
 
@@ -54,7 +54,7 @@ Isolation Forest è stato valutato solo nella classificazione binaria, come mode
 
 Il modello embedded ha ottenuto accuracy pari a 0.8180, F1-score pari a 0.8888 e Macro F1 pari a 0.6933. Questi valori sono inferiori rispetto alla baseline LightGBM, ma il confronto non deve essere interpretato come competizione diretta: il modello embedded è progettato per dimostrare il passaggio verso firmware ESP32/Wokwi con risorse ridotte.
 
-Il progetto Wokwi è stato predisposto in `wokwi/ids_esp32/`, con firmware Arduino/PlatformIO, circuito `diagram.json` e due LED per indicare classificazioni normali o di attacco. In questo ambiente non sono stati installati PlatformIO e Wokwi CLI in tempi accettabili; pertanto la compilazione firmware e la registrazione della simulazione Wokwi restano da eseguire localmente con gli strumenti dedicati.
+Il progetto Wokwi è disponibile in `wokwi/ids_esp32/`, con firmware Arduino/PlatformIO, circuito `diagram.json` e due LED per indicare classificazioni normali o di attacco. La variante browser permette di eseguire la dimostrazione senza dipendere dall'installazione locale di PlatformIO o Wokwi CLI.
 
 La variante browser è disponibile come progetto Wokwi all'indirizzo `https://wokwi.com/projects/472799587810026497` ed è stata esportata nella directory `wokwi/browser_esp32/`. La registrazione video della simulazione è stata prodotta esternamente e non viene inclusa nel repository per evitare di versionare file multimediali pesanti.
 

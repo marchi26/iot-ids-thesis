@@ -116,7 +116,7 @@ Interpretability analysis:
 python src/experiments/run_interpretability.py
 ```
 
-The interpretability runner uses SHAP if it is installed in the active environment. If SHAP is not available, it falls back to the selected tree model's feature importance and records the method in the generated CSV.
+The interpretability runner uses SHAP, included in `requirements.txt`, and records the method in the generated CSV. A native tree-feature-importance fallback is retained only to provide a clear degraded mode if SHAP is unavailable; the committed thesis results were generated with SHAP.
 
 Deployment-oriented model size and latency analysis:
 

@@ -16,7 +16,7 @@ La pipeline sviluppata comprende validazione del dataset, preprocessing, codific
 
 I risultati sperimentali indicano prestazioni molto elevate per i modelli ensemble, in particolare LightGBM, sia nella classificazione binaria sia nella classificazione multiclasse. Logistic Regression risulta meno performante, ma mantiene una maggiore semplicità e costituisce una base utile per discutere scenari embedded. Il dimostratore Wokwi mostra l'esecuzione simulata di un modello compatto con coefficienti quantizzati, evidenziando il compromesso tra accuratezza, semplicità computazionale e portabilità su dispositivi IoT.
 
-L'elaborato non si limita al confronto tra modelli, ma collega i risultati sperimentali al problema più generale della sicurezza IoT. Vengono quindi discusse strategie di mitigazione quali segmentazione della rete, hardening dei dispositivi, aggiornamenti firmware, autenticazione forte, inventario degli asset, logging, monitoraggio del traffico, anomaly detection e principi zero trust. Il lavoro fornisce una base sperimentale concreta e riproducibile, utile per ulteriori estensioni verso analisi SHAP, tuning più ampio, valutazione del drift, simulazioni più realistiche e test su hardware fisico.
+L'elaborato non si limita al confronto tra modelli, ma collega i risultati sperimentali al problema più generale della sicurezza IoT. Vengono quindi discusse strategie di mitigazione quali segmentazione della rete, hardening dei dispositivi, aggiornamenti firmware, autenticazione forte, inventario degli asset, logging, monitoraggio del traffico, anomaly detection e principi zero trust. Il lavoro fornisce una base sperimentale concreta e riproducibile, completata da analisi SHAP, misure orientate al deployment e simulazione embedded; drift, traffico live e hardware fisico sono delimitati come ambiti non coperti dall'esperimento.
 
 ## Capitolo 1 - Introduzione
 
@@ -26,7 +26,7 @@ Con l'espressione Internet of Things si indica un insieme di dispositivi fisici 
 
 Gli scenari applicativi sono numerosi. Nelle abitazioni intelligenti, sensori e attuatori gestiscono illuminazione, climatizzazione, videosorveglianza e sicurezza domestica. Nelle smart city, dispositivi distribuiti supportano monitoraggio del traffico, illuminazione pubblica, parcheggi intelligenti e gestione ambientale. Nel settore sanitario, dispositivi connessi possono raccogliere dati clinici e supportare il monitoraggio remoto. Nell'industria, l'Industrial Internet of Things consente manutenzione predittiva, controllo di processo e raccolta di dati macchina. In ciascuno di questi casi, l'affidabilità del sistema dipende non solo dalla correttezza funzionale, ma anche dalla sicurezza delle comunicazioni e dei dispositivi.
 
-L'elemento che rende gli ambienti IoT particolarmente complessi è l'eterogeneità. Una stessa infrastruttura può includere microcontrollori, dispositivi embedded Linux, gateway industriali, reti wireless, broker MQTT, applicazioni cloud, API, database e interfacce web. Ogni componente utilizza tecnologie, protocolli e cicli di aggiornamento differenti. Di conseguenza, la sicurezza IoT non può essere affrontata come un problema isolato del singolo dispositivo: deve essere analizzata a livello architetturale, considerando l'intero percorso del dato, dalla raccolta alla trasmissione, dall'elaborazione alla conservazione.
+L'elemento che rende gli ambienti IoT particolarmente complessi è l'eterogeneità. Una stessa infrastruttura può includere microcontrollori, dispositivi embedded Linux, gateway industriali, reti wireless, broker MQTT, applicazioni cloud, API, database e interfacce web. Ogni componente utilizza tecnologie, protocolli e cicli di aggiornamento differenti. Di conseguenza, la sicurezza IoT non può essere affrontata come un problema isolato del singolo dispositivo: deve essere analizzata a livello architetturale, considerando l'intero percorso del dato, dalla raccolta alla trasmissione, dall'elaborazione alla conservazione [15].
 
 ### 1.2 Crescita degli ambienti connessi e aumento della superficie di attacco
 
@@ -42,7 +42,7 @@ La sicurezza IoT presenta difficoltà specifiche. In primo luogo, molti disposit
 
 Un ulteriore problema riguarda la visibilità. Per proteggere una rete è necessario sapere quali dispositivi sono presenti, quali servizi espongono, quali protocolli utilizzano e quale comportamento di traffico è normale. Negli ambienti IoT questa informazione non è sempre disponibile. Dispositivi installati in momenti diversi, da fornitori diversi e con finalità diverse possono convivere nella stessa rete senza una governance uniforme.
 
-La sicurezza deve quindi combinare misure preventive e misure di rilevamento. Le prime includono hardening, configurazioni sicure, segmentazione, autenticazione, aggiornamenti e controllo accessi. Le seconde includono monitoraggio, logging, sistemi IDS e analisi del traffico. Gli Intrusion Detection Systems sono particolarmente importanti perché consentono di individuare attività sospette anche quando le misure preventive non sono sufficienti a impedire la compromissione.
+La sicurezza deve quindi combinare misure preventive e misure di rilevamento. Le prime includono hardening, configurazioni sicure, segmentazione, autenticazione, aggiornamenti e controllo accessi. Le seconde includono monitoraggio, logging, sistemi IDS e analisi del traffico. Gli Intrusion Detection Systems sono particolarmente importanti perché consentono di individuare attività sospette anche quando le misure preventive non sono sufficienti a impedire la compromissione [3], [17].
 
 ### 1.4 Obiettivo e contributo della tesi
 
@@ -60,7 +60,7 @@ Il Capitolo 2 presenta lo stato dell'arte relativo ad architetture IoT, vulnerab
 
 ### 2.1 Architetture IoT
 
-Le architetture IoT sono spesso rappresentate mediante una suddivisione a livelli. Il livello percettivo include sensori e attuatori che interagiscono direttamente con l'ambiente fisico. Il livello di comunicazione comprende protocolli e tecnologie di rete che consentono ai dispositivi di trasmettere dati. Il livello edge o gateway aggrega, filtra o pre-elabora le informazioni. Il livello applicativo, infine, comprende piattaforme cloud, dashboard, sistemi di analisi e applicazioni finali.
+Le architetture IoT sono spesso rappresentate mediante una suddivisione a livelli. Il livello percettivo include sensori e attuatori che interagiscono direttamente con l'ambiente fisico. Il livello di comunicazione comprende protocolli e tecnologie di rete che consentono ai dispositivi di trasmettere dati. Il livello edge o gateway aggrega, filtra o pre-elabora le informazioni. Il livello applicativo, infine, comprende piattaforme cloud, dashboard, sistemi di analisi e applicazioni finali [15].
 
 Questa suddivisione è utile perché evidenzia come la sicurezza debba essere applicata lungo l'intera catena. Un sensore può essere fisicamente manomesso, un canale wireless può essere intercettato, un gateway può essere compromesso, un broker MQTT può essere configurato senza autenticazione, un'API cloud può esporre dati sensibili. Il rischio complessivo dipende dalla somma di queste esposizioni e dalla capacità dell'architettura di limitarne gli effetti.
 
@@ -70,11 +70,11 @@ Nel contesto IoT, un elemento centrale è il gateway. Il gateway può svolgere f
 
 I sistemi IoT possono utilizzare protocolli diversi a seconda dei requisiti di consumo energetico, portata, latenza e affidabilità. Wi-Fi ed Ethernet sono comuni in ambienti domestici e industriali; Bluetooth Low Energy è usato per dispositivi a corto raggio; Zigbee e Thread sono diffusi in reti mesh; LoRaWAN è adatto a comunicazioni a lunga distanza con basso consumo; MQTT è ampiamente usato come protocollo applicativo publish/subscribe.
 
-MQTT è particolarmente rilevante perché consente a dispositivi leggeri di pubblicare messaggi su topic gestiti da un broker. Il modello publish/subscribe semplifica la comunicazione, ma introduce rischi se il broker è esposto senza autenticazione, senza TLS o con autorizzazioni troppo permissive. Un attaccante potrebbe pubblicare messaggi falsi, iscriversi a topic sensibili o generare traffico anomalo. Per questo motivo, la sicurezza del broker e delle credenziali è un elemento importante nelle architetture IoT.
+MQTT è particolarmente rilevante perché consente a dispositivi leggeri di pubblicare messaggi su topic gestiti da un broker. Il modello publish/subscribe semplifica la comunicazione, ma introduce rischi se il broker è esposto senza autenticazione, senza TLS o con autorizzazioni troppo permissive. Un attaccante potrebbe pubblicare messaggi falsi, iscriversi a topic sensibili o generare traffico anomalo. Per questo motivo, la sicurezza del broker e delle credenziali è un elemento importante nelle architetture IoT [4].
 
 ### 2.3 Vulnerabilità tipiche
 
-Le vulnerabilità più frequenti nei sistemi IoT includono credenziali deboli o predefinite, servizi non necessari attivi, firmware non aggiornato, assenza di cifratura, gestione inadeguata delle chiavi, API non protette, configurazioni cloud errate e mancanza di segmentazione. Queste vulnerabilità non sono isolate: spesso si combinano tra loro, generando catene di attacco.
+Le vulnerabilità più frequenti nei sistemi IoT includono credenziali deboli o predefinite, servizi non necessari attivi, firmware non aggiornato, assenza di cifratura, gestione inadeguata delle chiavi, API non protette, configurazioni cloud errate e mancanza di segmentazione. Queste vulnerabilità non sono isolate: spesso si combinano tra loro, generando catene di attacco [3], [15], [17].
 
 Un esempio tipico è un dispositivo esposto in rete con credenziali predefinite. Dopo l'accesso, l'attaccante può modificare configurazioni, installare codice malevolo o usare il dispositivo per generare traffico verso altri target. Se la rete non è segmentata, il dispositivo compromesso può diventare un ponte verso sistemi più critici. Se non esiste logging centralizzato, l'attacco può rimanere inosservato.
 
@@ -88,7 +88,7 @@ Dal punto di vista IDS, questi attacchi possono manifestarsi attraverso pattern 
 
 ### 2.5 Intrusion Detection Systems
 
-Un Intrusion Detection System ha il compito di rilevare attività sospette o malevole. Gli IDS possono essere host-based, quando analizzano eventi su un singolo dispositivo, oppure network-based, quando osservano il traffico di rete. In ambito IoT, la collocazione dell'IDS è una scelta progettuale importante: installarlo direttamente sul dispositivo può ridurre la latenza ma richiede risorse; installarlo su gateway o edge node offre maggiore capacità computazionale; installarlo in cloud consente analisi centralizzate ma introduce dipendenza dalla connettività.
+Un Intrusion Detection System ha il compito di rilevare attività sospette o malevole. Gli IDS possono essere host-based, quando analizzano eventi su un singolo dispositivo, oppure network-based, quando osservano il traffico di rete. In ambito IoT, la collocazione dell'IDS è una scelta progettuale importante: installarlo direttamente sul dispositivo può ridurre la latenza ma richiede risorse; installarlo su gateway o edge node offre maggiore capacità computazionale; installarlo in cloud consente analisi centralizzate ma introduce dipendenza dalla connettività [16].
 
 Gli IDS basati su firme confrontano il traffico con regole note. Sono efficaci per attacchi già conosciuti, ma limitati rispetto a varianti nuove. Gli IDS basati su anomalie modellano il comportamento normale e segnalano deviazioni. Questa seconda categoria è adatta agli ambienti IoT perché molti dispositivi hanno comportamenti ripetitivi: un sensore invia misurazioni periodiche, un attuatore riceve comandi specifici, un gateway comunica con endpoint noti. Tuttavia, definire il comportamento normale non è sempre semplice, soprattutto in presenza di aggiornamenti, cambiamenti operativi e rumore nei dati.
 
@@ -96,7 +96,7 @@ Gli IDS basati su firme confrontano il traffico con regole note. Sono efficaci p
 
 Il machine learning consente di apprendere relazioni tra feature di traffico e classi di appartenenza. Nei modelli supervisionati, il dataset contiene etichette che indicano se un campione è normale o malevolo, oppure a quale categoria di attacco appartiene. Nei modelli non supervisionati, invece, l'algoritmo cerca anomalie senza utilizzare etichette di attacco durante l'addestramento.
 
-Random Forest, XGBoost e LightGBM sono modelli ensemble basati su alberi decisionali. Sono adatti a dati tabulari e possono modellare relazioni non lineari. Logistic Regression è un modello lineare più semplice e interpretabile, utile come baseline e come riferimento per scenari embedded. MLPClassifier rappresenta una rete neurale feed-forward implementata in scikit-learn; offre maggiore flessibilità, ma richiede attenzione a convergenza e tuning. Isolation Forest è un metodo non supervisionato per anomaly detection, basato sull'idea che le anomalie siano più facili da isolare rispetto ai campioni normali.
+Random Forest, XGBoost e LightGBM sono modelli ensemble basati su alberi decisionali [5], [6], [7]. Sono adatti a dati tabulari e possono modellare relazioni non lineari. Logistic Regression è un modello lineare più semplice e interpretabile, utile come baseline e come riferimento per scenari embedded [20]. MLPClassifier rappresenta una rete neurale feed-forward implementata in scikit-learn [21]; offre maggiore flessibilità, ma richiede attenzione a convergenza e tuning. Isolation Forest è un metodo non supervisionato per anomaly detection, basato sull'idea che le anomalie siano più facili da isolare rispetto ai campioni normali [9].
 
 ### 2.7 Requisiti di sicurezza in un ambiente IoT
 
@@ -134,7 +134,7 @@ Questa organizzazione evita l'uso di percorsi assoluti e consente di eseguire gl
 
 ### 3.2 Dataset utilizzato
 
-Il dataset utilizzato è TON_IoT/UNSW, nella componente di rete. Il file atteso dalla pipeline è `data/raw/train_test_network.csv`. La colonna `label` viene utilizzata come target per la classificazione binaria, mentre la colonna `type` viene utilizzata come target per la classificazione multiclasse.
+Il dataset utilizzato è TON_IoT/UNSW, nella componente di rete [1], [2], [13], [14]. Il file atteso dalla pipeline è `data/raw/train_test_network.csv`. La colonna `label` viene utilizzata come target per la classificazione binaria, mentre la colonna `type` viene utilizzata come target per la classificazione multiclasse.
 
 La classificazione binaria distingue traffico normale e traffico di attacco. La classificazione multiclasse distingue invece più categorie di traffico, includendo classi normali e diverse tipologie di attacco. Il secondo compito è più complesso perché richiede di riconoscere non solo la presenza di una minaccia, ma anche la sua categoria.
 
@@ -172,9 +172,9 @@ La scelta di questi modelli consente di confrontare approcci diversi. I modelli 
 
 ### 3.7 Esperimenti estesi
 
-Gli esperimenti estesi includono SMOTE, tuning iperparametrico, MLPClassifier e Isolation Forest. SMOTE affronta lo sbilanciamento generando campioni sintetici della classe minoritaria nel training set. Il tuning iperparametrico esplora configurazioni alternative dei modelli ensemble per verificare eventuali margini di miglioramento. MLPClassifier introduce un modello neurale feed-forward. Isolation Forest valuta un approccio di anomaly detection non supervisionato.
+Gli esperimenti estesi includono SMOTE, tuning iperparametrico, MLPClassifier e Isolation Forest. SMOTE affronta lo sbilanciamento generando campioni sintetici della classe minoritaria nel training set [8]. Il tuning iperparametrico esplora configurazioni alternative dei modelli ensemble per verificare eventuali margini di miglioramento. MLPClassifier introduce un modello neurale feed-forward. Isolation Forest valuta un approccio di anomaly detection non supervisionato [9].
 
-Sono state inoltre introdotte analisi complementari: feature importance per interpretabilità, misure di latenza e dimensione degli artefatti, compressione dei modelli e generazione di un modello compatto esportabile in C++ per simulazione Wokwi.
+Sono state inoltre introdotte analisi complementari: interpretabilità SHAP [10], misure di latenza e dimensione degli artefatti, compressione dei modelli e generazione di un modello compatto esportabile in C++ per simulazione Wokwi.
 
 ### 3.8 Metriche di valutazione
 
@@ -184,7 +184,7 @@ Per ogni modello vengono inoltre salvate matrice di confusione, report di classi
 
 ### 3.9 Protocollo di esecuzione
 
-Il protocollo sperimentale è stato definito per essere ripetibile. Dopo la preparazione dell'ambiente Python e l'installazione delle dipendenze, il dataset deve essere collocato nel percorso previsto. Successivamente, gli esperimenti possono essere eseguiti tramite gli script presenti in `src/experiments/`. Lo script `run_binary.py` esegue la pipeline binaria, `run_multiclass.py` esegue la pipeline multiclasse, `run_extended.py` esegue gli esperimenti aggiuntivi e `run_all.py` orchestri l'intero flusso.
+Il protocollo sperimentale è stato definito per essere ripetibile. Dopo la preparazione dell'ambiente Python e l'installazione delle dipendenze, il dataset deve essere collocato nel percorso previsto. Successivamente, gli esperimenti possono essere eseguiti tramite gli script presenti in `src/experiments/`. Lo script `run_binary.py` esegue la pipeline binaria, `run_multiclass.py` esegue la pipeline multiclasse, `run_extended.py` esegue gli esperimenti aggiuntivi e `run_all.py` orchestra l'intero flusso.
 
 Ogni runner segue lo stesso schema logico: caricamento della configurazione, validazione del dataset, preprocessing, addestramento, valutazione, salvataggio delle metriche e generazione dei grafici. Questo schema riduce la duplicazione e consente di individuare rapidamente eventuali errori.
 
@@ -198,9 +198,9 @@ Questa distinzione è utile perché le metriche e i grafici sono documentazione 
 
 ### 3.11 Simulazione IoT e dimostrazione embedded
 
-Accanto alla pipeline su dataset reale, il progetto include una componente di simulazione IoT. La simulazione Docker/MQTT mostra come dispositivi simulati possano pubblicare messaggi, come un collector possa raccoglierli e come un attacco simulato possa produrre pattern anomali. Questa parte non sostituisce TON_IoT, ma supporta la discussione architetturale.
+Accanto alla pipeline su dataset reale, il progetto include una componente di simulazione IoT. La simulazione Docker/MQTT [11] mostra come dispositivi simulati possano pubblicare messaggi, come un collector possa raccoglierli e come un attacco simulato possa produrre pattern anomali. Questa parte non sostituisce TON_IoT, ma supporta la discussione architetturale.
 
-Il dimostratore Wokwi rappresenta un passaggio ulteriore: un modello compatto viene esportato in C++ e simulato su ESP32. L'obiettivo non è ottenere le stesse prestazioni di LightGBM, ma mostrare come un classificatore leggero possa essere incorporato in un ambiente embedded. La presenza del dimostratore rende più concreta la discussione sui vincoli IoT.
+Il dimostratore Wokwi [12] rappresenta un passaggio ulteriore: un modello compatto viene esportato in C++ e simulato su ESP32. L'obiettivo non è ottenere le stesse prestazioni di LightGBM, ma mostrare come un classificatore leggero possa essere incorporato in un ambiente embedded, secondo la prospettiva TinyML [19]. La presenza del dimostratore rende più concreta la discussione sui vincoli IoT.
 
 ## Capitolo 4 - Risultati sperimentali
 
@@ -284,9 +284,9 @@ La presenza di risultati inferiori non è un errore sperimentale, ma un elemento
 
 L'interpretabilità è un requisito importante per un IDS, soprattutto quando le decisioni del modello generano alert o interventi operativi. Un modello molto accurato ma completamente opaco può essere difficile da accettare in contesti reali, perché gli amministratori devono comprendere almeno quali feature contribuiscono maggiormente alle decisioni.
 
-Nel progetto è stata implementata un'analisi di feature importance. In assenza di SHAP nell'ambiente locale, il runner utilizza l'importanza normalizzata delle feature fornita dal modello. Nel caso binario, le feature più rilevanti per LightGBM includono `src_port`, `src_ip_bytes`, `duration`, `src_bytes` e `src_pkts`. Queste feature sono coerenti con la natura del problema, perché porte, byte, pacchetti e durata del flusso rappresentano caratteristiche fondamentali del traffico di rete.
+Nel progetto è stata eseguita un'analisi SHAP globale sul modello LightGBM, selezionato perché migliore baseline in base al Macro F1. L'importanza è calcolata come media del valore SHAP assoluto su 1.000 campioni del test set [10]. Nel caso binario, le feature principali sono `dst_port` (2.3037), `proto_tcp` (2.0220), `proto_udp` (1.8811), `conn_state_REJ` (1.4085) e `src_pkts` (1.2056). Nel caso multiclasse emergono `dst_port` (0.9983), `src_port` (0.8610), `src_ip_bytes` (0.6687), `duration` (0.6638) e `conn_state_REJ` (0.4237). Porte, protocolli, stato e volume del flusso sono caratteristiche coerenti con il dominio del traffico di rete.
 
-L'analisi non deve essere interpretata come spiegazione causale completa. La feature importance indica quali variabili sono state più utili al modello, ma non dimostra da sola perché un evento sia malevolo. Per una fase successiva, l'uso di SHAP consentirebbe una spiegazione più dettagliata a livello globale e locale.
+L'analisi non deve essere interpretata come spiegazione causale completa: il valore SHAP quantifica quanto una feature contribuisce alle predizioni rispetto al valore di riferimento del modello, ma non dimostra da solo perché un evento sia malevolo. L'aggregazione assoluta adottata fornisce una lettura globale confrontabile tra feature; le spiegazioni locali di singoli alert rimangono fuori dal perimetro sperimentale dichiarato.
 
 ![Figura 13 - Importanza delle feature nel modello LightGBM binario](results/plots/binary_interpretability_feature_importance.png)
 
@@ -342,11 +342,11 @@ La differenza tra classificazione binaria e multiclasse è centrale. Nel caso bi
 
 ### 5.2 Interpretabilità contro prestazioni
 
-Un IDS deve essere accurato, ma anche interpretabile. In un ambiente operativo, un alert deve poter essere compreso, verificato e gestito. I modelli ensemble possono offrire prestazioni elevate, ma sono meno immediati da spiegare rispetto a Logistic Regression. La feature importance riduce parzialmente questo problema, mostrando quali variabili hanno maggiore impatto, ma non sostituisce un'analisi esplicativa completa.
+Un IDS deve essere accurato, ma anche interpretabile. In un ambiente operativo, un alert deve poter essere compreso, verificato e gestito. I modelli ensemble possono offrire prestazioni elevate, ma sono meno immediati da spiegare rispetto a Logistic Regression. L'analisi SHAP riduce parzialmente questo problema mostrando, con un criterio coerente, quali variabili incidono maggiormente sulle predizioni aggregate [10].
 
 Logistic Regression è meno accurata, ma più semplice. I coefficienti del modello possono essere analizzati direttamente e l'inferenza è computazionalmente leggera. Questo la rende interessante in scenari embedded o didattici, come mostrato dal dimostratore Wokwi. Tuttavia, la semplicità ha un costo: nel dataset considerato, il modello lineare non raggiunge le prestazioni degli ensemble.
 
-La scelta del modello deve quindi dipendere dal contesto. Se l'IDS opera su un server o gateway con risorse adeguate, LightGBM può essere preferibile. Se invece l'obiettivo è eseguire un modello molto compatto direttamente su un microcontrollore, può essere necessario accettare un calo di prestazioni o ricorrere a tecniche specifiche di TinyML.
+La scelta del modello deve quindi dipendere dal contesto. Se l'IDS opera su un server o gateway con risorse adeguate, LightGBM può essere preferibile. Se invece l'obiettivo è eseguire un modello molto compatto direttamente su un microcontrollore, può essere necessario accettare un calo di prestazioni o ricorrere a tecniche specifiche di TinyML [19].
 
 ### 5.3 Limiti del dataset statico
 
@@ -364,7 +364,7 @@ Nonostante questi limiti, Wokwi è utile in fase di tesi perché consente di dim
 
 ### 5.5 Strategie di mitigazione
 
-Un IDS basato su machine learning deve essere inserito in una strategia più ampia di difesa. Non può sostituire le misure preventive, ma può integrarle fornendo capacità di rilevamento. Le principali strategie di mitigazione includono segmentazione della rete, privilegio minimo, aggiornamenti firmware, autenticazione forte, inventario dei dispositivi, monitoraggio del traffico, anomaly detection, logging, alerting e principi zero trust.
+Un IDS basato su machine learning deve essere inserito in una strategia più ampia di difesa. Non può sostituire le misure preventive, ma può integrarle fornendo capacità di rilevamento. Le principali strategie di mitigazione includono segmentazione della rete, privilegio minimo, aggiornamenti firmware, autenticazione forte, inventario dei dispositivi, monitoraggio del traffico, anomaly detection, logging, alerting e principi zero trust [3], [17], [18].
 
 La segmentazione riduce il rischio di movimento laterale. I dispositivi IoT dovrebbero essere collocati in VLAN o reti separate rispetto a sistemi critici, server e postazioni utente. Il principio del privilegio minimo limita le autorizzazioni concesse a dispositivi, account e servizi. L'autenticazione forte riduce il rischio di accessi non autorizzati, soprattutto su broker MQTT, dashboard e API.
 
@@ -412,9 +412,9 @@ La tesi ha affrontato il tema della sicurezza nei sistemi Internet of Things att
 
 La baseline ha confrontato Random Forest, LightGBM, XGBoost e Logistic Regression. I risultati mostrano che i modelli ensemble, in particolare LightGBM, ottengono prestazioni molto elevate. Logistic Regression risulta meno accurata, ma è utile come modello semplice, interpretabile e adatto a una dimostrazione embedded. Gli esperimenti estesi con SMOTE, tuning, MLPClassifier e Isolation Forest hanno permesso di ampliare il confronto e di discutere limiti e vantaggi di approcci differenti.
 
-L'analisi di interpretabilità e le misure di deployment hanno esteso la valutazione oltre le metriche predittive. Il dimostratore Wokwi ha mostrato come un modello compatto possa essere esportato e simulato su ESP32, evidenziando il compromesso tra accuratezza e portabilità.
+L'analisi SHAP e le misure di deployment hanno esteso la valutazione oltre le metriche predittive. Il dimostratore Wokwi ha mostrato come un modello compatto possa essere esportato e simulato su ESP32, evidenziando il compromesso tra accuratezza e portabilità.
 
-Il lavoro non deve essere interpretato come soluzione definitiva per la sicurezza IoT, ma come base concreta per ulteriori sviluppi. Tra le direzioni future rientrano tuning più esteso, analisi SHAP, test su dataset aggiuntivi, valutazione del concept drift, simulazioni più realistiche, integrazione con traffico MQTT e riproduzione su hardware fisico. Quest'ultimo passaggio consentirebbe di misurare aspetti non osservabili in simulazione, come memoria reale, latenza effettiva, consumo energetico e stabilità del dispositivo.
+Il lavoro non deve essere interpretato come soluzione definitiva per la sicurezza IoT, ma come esperimento concluso entro un perimetro dichiarato. Estensioni indipendenti dal completamento della tesi includono test su dataset aggiuntivi, valutazione del concept drift, acquisizione di traffico live e riproduzione su hardware fisico. Quest'ultimo passaggio consentirebbe di misurare aspetti non osservabili in simulazione, come memoria reale, latenza effettiva, consumo energetico e stabilità del dispositivo.
 
 In conclusione, la tesi dimostra che modelli di machine learning possono supportare efficacemente il rilevamento di intrusioni in ambienti IoT, purché siano inseriti in una strategia di sicurezza più ampia e valutati con attenzione rispetto a riproducibilità, interpretabilità, limiti del dataset e vincoli di deployment.
 
@@ -443,3 +443,21 @@ In conclusione, la tesi dimostra che modelli di machine learning possono support
 [11] Docker documentation, "Docker Compose", https://docs.docker.com/compose.
 
 [12] Wokwi Docs, "diagram.json File Format" e "Project Configuration", https://docs.wokwi.com/.
+
+[13] N. Moustafa, "A new distributed architecture for evaluating AI-based security systems at the edge: Network TON_IoT datasets", Sustainable Cities and Society, vol. 72, art. 102994, 2021, doi: 10.1016/j.scs.2021.102994.
+
+[14] T. M. Booij, I. Chiscop, E. Meeuwissen, N. Moustafa e F. T. H. den Hartog, "ToN_IoT: The role of heterogeneity and the need for standardization of features and attack types in IoT network intrusion data sets", IEEE Internet of Things Journal, vol. 9, n. 1, pp. 485-496, 2022, doi: 10.1109/JIOT.2021.3085194.
+
+[15] S. Sicari, A. Rizzardi, L. A. Grieco e A. Coen-Porisini, "Security, privacy and trust in Internet of Things: The road ahead", Computer Networks, vol. 76, pp. 146-164, 2015, doi: 10.1016/j.comnet.2014.11.008.
+
+[16] B. B. Zarpelão, R. S. Miani, C. T. Kawakani e S. C. de Alvarenga, "A survey of intrusion detection in Internet of Things", Journal of Network and Computer Applications, vol. 84, pp. 25-37, 2017, doi: 10.1016/j.jnca.2017.02.009.
+
+[17] NIST, "Foundational Cybersecurity Activities for IoT Device Manufacturers", NISTIR 8259, 2020, doi: 10.6028/NIST.IR.8259.
+
+[18] S. Rose, O. Borchert, S. Mitchell e S. Connelly, "Zero Trust Architecture", NIST Special Publication 800-207, 2020, doi: 10.6028/NIST.SP.800-207.
+
+[19] P. Warden e D. Situnayake, "TinyML: Machine Learning with TensorFlow Lite on Arduino and Ultra-Low-Power Microcontrollers", O'Reilly Media, 2019.
+
+[20] Scikit-learn Developers, "LogisticRegression", scikit-learn API Reference, https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html.
+
+[21] Scikit-learn Developers, "MLPClassifier", scikit-learn API Reference, https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html.
