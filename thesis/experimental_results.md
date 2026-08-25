@@ -28,31 +28,33 @@ Anche nella classificazione multiclasse, LightGBM ha ottenuto la migliore accura
 
 Gli esperimenti con SMOTE sono stati applicati esclusivamente al training set. Nel caso binario, Random Forest senza SMOTE ha ottenuto Macro F1 pari a 0.9974, mentre Random Forest con SMOTE ha ottenuto Macro F1 pari a 0.9969. Per Logistic Regression il Macro F1 è passato da 0.9408 senza SMOTE a 0.9410 con SMOTE, con una variazione molto limitata.
 
+Tutti i confronti SMOTE utilizzano 30.000 record di training selezionati in modo stratificato e lo stesso test set separato di 42.209 record. Anche il training set bilanciato viene ricampionato a 30.000 record dopo l'applicazione di SMOTE, così da mantenere confrontabile il costo computazionale.
+
 Nel caso multiclasse, LightGBM con SMOTE ha ottenuto Macro F1 pari a 0.9528, mentre LightGBM senza SMOTE ha ottenuto Macro F1 pari a 0.9524. La differenza è ridotta e non consente di affermare un miglioramento sistematico dovuto al bilanciamento. I risultati indicano che l'effetto di SMOTE dipende dal modello e dalla modalità di classificazione.
 
 ## Tuning iperparametrico
 
-Il tuning è stato rieseguito con 6 iterazioni e 3 fold di cross-validation, utilizzando un campione stratificato del training set per contenere il tempo computazionale. Nel caso binario, LightGBM ha ottenuto Macro F1 pari a 0.9979, Random Forest 0.9974 e XGBoost 0.9972. Nel caso multiclasse, Random Forest ha ottenuto Macro F1 pari a 0.9528, LightGBM 0.9523 e XGBoost 0.9482.
+Il tuning è stato rieseguito con 6 iterazioni e 3 fold di cross-validation, utilizzando 30.000 record di training selezionati in modo stratificato per contenere il tempo computazionale. La valutazione è eseguita sui 42.209 record del test set invariato. Nel caso binario, LightGBM ha ottenuto Macro F1 pari a 0.9979, Random Forest 0.9974 e XGBoost 0.9972. Nel caso multiclasse, Random Forest ha ottenuto Macro F1 pari a 0.9528, LightGBM 0.9523 e XGBoost 0.9482.
 
 Questi risultati non mostrano un miglioramento netto rispetto alla baseline completa. Il confronto deve essere interpretato con cautela, perché la baseline è addestrata sull'intero training set, mentre il tuning utilizza un campione stratificato per ragioni computazionali. Il risultato è comunque utile per documentare il protocollo di ricerca degli iperparametri e i limiti della sperimentazione locale.
 
 ## Modelli aggiuntivi
 
-MLPClassifier ha ottenuto Macro F1 pari a 0.9899 nella classificazione binaria e 0.8851 nella classificazione multiclasse. Durante l'esecuzione multiclasse l'ottimizzatore ha raggiunto il numero massimo di iterazioni configurato. Il confronto resta valido per la configurazione dichiarata, ma segnala che il modello neurale è più sensibile alla scelta dell'architettura e dei parametri di ottimizzazione rispetto agli ensemble valutati.
+MLPClassifier è stato addestrato su 30.000 record stratificati in entrambe le modalità e ha ottenuto Macro F1 pari a 0.9899 nella classificazione binaria e 0.8851 nella classificazione multiclasse. Durante l'esecuzione multiclasse l'ottimizzatore ha raggiunto il numero massimo di iterazioni configurato. Il confronto resta valido per la configurazione dichiarata, ma segnala che il modello neurale è più sensibile alla scelta dell'architettura e dei parametri di ottimizzazione rispetto agli ensemble valutati.
 
-Isolation Forest è stato valutato solo nella classificazione binaria, come modello non supervisionato di anomaly detection. Ha ottenuto Macro F1 pari a 0.3625, sensibilmente inferiore rispetto ai modelli supervisionati. Questo risultato è coerente con la diversa impostazione metodologica: il modello è addestrato sui soli campioni normali e non utilizza direttamente le etichette di attacco durante l'addestramento.
+Isolation Forest è stato valutato solo nella classificazione binaria, come modello non supervisionato di anomaly detection. È stato addestrato sui 7.108 record normali contenuti nel campione binario stratificato e valutato sui medesimi 42.209 record di test. Ha ottenuto Macro F1 pari a 0.3625, sensibilmente inferiore rispetto ai modelli supervisionati. Questo risultato è coerente con la diversa impostazione metodologica: il modello non utilizza direttamente le etichette di attacco durante l'addestramento.
 
 ## Interpretabilità, latenza e compressione
 
 È stata eseguita un'analisi SHAP sul modello LightGBM selezionato in base al Macro F1 della baseline. L'importanza globale è stata calcolata come media del valore SHAP assoluto su 1.000 campioni del test set. Nel caso binario emergono soprattutto `dst_port` (2.3037), `proto_tcp` (2.0220), `proto_udp` (1.8811), `conn_state_REJ` (1.4085) e `src_pkts` (1.2056). Nel caso multiclasse le prime feature sono `dst_port` (0.9983), `src_port` (0.8610), `src_ip_bytes` (0.6687), `duration` (0.6638) e `conn_state_REJ` (0.4237). I valori misurano l'ampiezza media del contributo alle predizioni, non una relazione causale con gli attacchi.
 
-È stata inoltre generata una prima analisi di deployment tramite serializzazione e compressione Joblib del modello LightGBM selezionato. Nel caso binario, l'artefatto è passato da 2.09 MB a 0.85 MB, con rapporto di compressione pari a 0.41. Nel caso multiclasse, l'artefatto è passato da 17.20 MB a 7.34 MB, con rapporto di compressione pari a 0.43. Questi dati non equivalgono a una quantizzazione per microcontrollori, ma forniscono una prima misura utile per discutere dimensione del modello e latenza.
+È stata inoltre eseguita un'analisi di deployment tramite serializzazione e compressione Joblib del modello LightGBM selezionato. Nel caso binario, l'artefatto è passato da 2.09 MB a 0.85 MB, con rapporto di compressione pari a 0.41. Nel caso multiclasse, l'artefatto è passato da 17.20 MB a 7.34 MB, con rapporto di compressione pari a 0.43. Questi dati non equivalgono a una quantizzazione per microcontrollori, ma forniscono una misura utile per discutere dimensione del modello e latenza.
 
 ## Dimostratore embedded per Wokwi
 
 È stato aggiunto un exporter dedicato al deployment embedded, `src/experiments/export_embedded_model.py`. Lo script addestra una Logistic Regression binaria compatta su dieci feature numeriche e genera il file C++ `wokwi/ids_esp32/include/embedded_model.h`, contenente coefficienti quantizzati, parametri di normalizzazione e campioni di test.
 
-Il modello embedded ha ottenuto accuracy pari a 0.8180, F1-score pari a 0.8888 e Macro F1 pari a 0.6933. Questi valori sono inferiori rispetto alla baseline LightGBM, ma il confronto non deve essere interpretato come competizione diretta: il modello embedded è progettato per dimostrare il passaggio verso firmware ESP32/Wokwi con risorse ridotte.
+Le metriche sono state calcolate separatamente per la pipeline Python originale e per un'emulazione Python della formula con coefficienti e intercetta `int16` usata dal firmware. Sui 42.209 record di test entrambe le varianti hanno ottenuto accuracy 0.8180, F1-score 0.8888 e Macro F1 0.6933, con accordo delle predizioni pari al 100% e variazioni nulle di accuracy e Macro F1. I valori sono inferiori rispetto alla baseline LightGBM, ma il confronto non deve essere interpretato come competizione diretta: il modello embedded è progettato per dimostrare il passaggio verso firmware ESP32/Wokwi con risorse ridotte.
 
 Il progetto Wokwi è disponibile in `wokwi/ids_esp32/`, con firmware Arduino/PlatformIO, circuito `diagram.json` e due LED per indicare classificazioni normali o di attacco. La variante browser permette di eseguire la dimostrazione senza dipendere dall'installazione locale di PlatformIO o Wokwi CLI.
 

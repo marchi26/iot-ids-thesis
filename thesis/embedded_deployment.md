@@ -1,6 +1,6 @@
 # Deployment embedded e simulazione Wokwi
 
-Questa sezione documenta una prima estensione orientata al deployment embedded del sistema IDS. L'obiettivo non è sostituire la pipeline sperimentale principale basata su TON_IoT e modelli ensemble, ma mostrare come un modello più compatto possa essere esportato e utilizzato in un contesto simulato di dispositivo IoT.
+Questa sezione documenta l'estensione orientata al deployment embedded del sistema IDS. L'obiettivo non è sostituire la pipeline sperimentale principale basata su TON_IoT e modelli ensemble, ma mostrare come un modello più compatto possa essere esportato e utilizzato in un contesto simulato di dispositivo IoT.
 
 ## Modello esportato
 
@@ -17,9 +17,11 @@ I coefficienti del modello Logistic Regression sono esportati in formato `int16`
 - coefficienti quantizzati;
 - intercetta quantizzata;
 - campioni di test derivati dal dataset;
-- metriche ottenute durante l'esportazione.
+- metriche del modello originale e dell'emulazione quantizzata ottenute durante l'esportazione.
 
 Questa procedura è una quantizzazione semplice dei coefficienti del modello lineare. Non equivale a una conversione completa TinyML di un modello ensemble, ma consente di discutere in modo concreto il passaggio da pipeline Python a firmware embedded.
+
+Le metriche vengono calcolate sull'intero test set di 42.209 record in due varianti. La prima usa direttamente la pipeline Python con coefficienti in virgola mobile; la seconda ricostruisce in Python la stessa operazione eseguita dal firmware, dequantizzando coefficienti e intercetta `int16`. Entrambe ottengono accuracy 0,8180, F1-score 0,8888 e Macro F1 0,6933. L'accordo tra le predizioni è pari al 100% e le differenze di accuracy e Macro F1 sono entrambe nulle. Il risultato indica che, alla scala adottata, l'arrotondamento dei coefficienti non modifica le classi predette sul test set; non costituisce tuttavia una misura delle prestazioni temporali o energetiche su hardware fisico.
 
 ## Simulazione Wokwi
 

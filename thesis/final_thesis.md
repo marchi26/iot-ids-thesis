@@ -160,7 +160,7 @@ Anche SMOTE viene applicato esclusivamente al training set. Applicare SMOTE al t
 
 ### 3.5 Split sperimentale
 
-La suddivisione train/test è stratificata, con test size pari al 20% e seed casuale fissato a 42. La stratificazione mantiene una distribuzione delle classi simile tra training set e test set, riducendo il rischio che una classe minoritaria sia rappresentata in modo insufficiente in una delle due partizioni.
+La suddivisione train/test è stratificata, con una quota di test pari al 20% e seed casuale fissato a 42. La stratificazione mantiene una distribuzione delle classi simile tra training set e test set, riducendo il rischio che una classe minoritaria sia rappresentata in modo insufficiente in una delle due partizioni.
 
 Il seed fisso permette di ripetere l'esperimento ottenendo la stessa suddivisione e quindi metriche confrontabili. Questa scelta è essenziale in un progetto di tesi sperimentale, perché consente al relatore o ad altri studenti di verificare i risultati.
 
@@ -174,6 +174,8 @@ La scelta di questi modelli consente di confrontare approcci diversi. I modelli 
 
 Gli esperimenti estesi includono SMOTE, tuning iperparametrico, MLPClassifier e Isolation Forest. SMOTE affronta lo sbilanciamento generando campioni sintetici della classe minoritaria nel training set [8]. Il tuning iperparametrico esplora configurazioni alternative dei modelli ensemble per verificare eventuali margini di miglioramento. MLPClassifier introduce un modello neurale feed-forward. Isolation Forest valuta un approccio di anomaly detection non supervisionato [9].
 
+Il dataset contiene 211.045 record: con lo split stratificato 80/20, le baseline usano 168.836 record di training e 42.209 record di test. Per rendere sostenibili e confrontabili gli esperimenti estesi, SMOTE, tuning e MLPClassifier usano campioni stratificati di 30.000 record di training sia nel caso binario sia nel multiclasse; la valutazione resta sempre effettuata sull'intero test set separato di 42.209 record. Per il confronto con SMOTE, anche il training set bilanciato viene ricampionato a 30.000 record dopo il sovracampionamento. Isolation Forest utilizza soltanto i 7.108 record normali presenti nel campione binario, coerentemente con l'addestramento one-class. Il tuning valuta 6 configurazioni casuali con 3 fold di cross-validation. Le numerosità effettive sono salvate nei CSV nelle colonne `training_samples` e `test_samples`.
+
 Sono state inoltre introdotte analisi complementari: interpretabilità SHAP [10], misure di latenza e dimensione degli artefatti, compressione dei modelli e generazione di un modello compatto esportabile in C++ per simulazione Wokwi.
 
 ### 3.8 Metriche di valutazione
@@ -184,7 +186,9 @@ Per ogni modello vengono inoltre salvate matrice di confusione, report di classi
 
 ### 3.9 Protocollo di esecuzione
 
-Il protocollo sperimentale è stato definito per essere ripetibile. Dopo la preparazione dell'ambiente Python e l'installazione delle dipendenze, il dataset deve essere collocato nel percorso previsto. Successivamente, gli esperimenti possono essere eseguiti tramite gli script presenti in `src/experiments/`. Lo script `run_binary.py` esegue la pipeline binaria, `run_multiclass.py` esegue la pipeline multiclasse, `run_extended.py` esegue gli esperimenti aggiuntivi e `run_all.py` orchestra l'intero flusso.
+Il protocollo sperimentale è stato definito per essere ripetibile. Dopo la preparazione dell'ambiente Python e l'installazione delle dipendenze, il dataset deve essere collocato nel percorso previsto. Successivamente, gli esperimenti possono essere eseguiti tramite gli script presenti in `src/experiments/`. Lo script `run_binary.py` esegue la baseline binaria, `run_multiclass.py` la baseline multiclasse e `run_extended.py` gli esperimenti con SMOTE, tuning, MLPClassifier e Isolation Forest.
+
+Il nome `run_all.py` indica l'orchestrazione del nucleo classificativo: lo script richiama, nell'ordine, `run_binary.py`, `run_multiclass.py`, `run_extended.py` e `generate_result_summary.py`. Non richiama `run_interpretability.py`, `run_deployment_analysis.py`, `export_embedded_model.py` né la simulazione MQTT/Wokwi. Queste analisi sono eseguite separatamente perché presentano dipendenze, costi computazionali o ambienti di esecuzione differenti; i comandi dedicati sono documentati nel README.
 
 Ogni runner segue lo stesso schema logico: caricamento della configurazione, validazione del dataset, preprocessing, addestramento, valutazione, salvataggio delle metriche e generazione dei grafici. Questo schema riduce la duplicazione e consente di individuare rapidamente eventuali errori.
 
@@ -302,7 +306,9 @@ Le misure di inferenza mostrano che Logistic Regression è molto veloce, ma meno
 
 ### 4.9 Dimostratore embedded con Wokwi
 
-È stato realizzato un dimostratore Wokwi su ESP32 per simulare l'esecuzione embedded di un modello IDS compatto. L'exporter addestra una Logistic Regression binaria su dieci feature numeriche, normalizza le variabili, quantizza i coefficienti e genera un header C++ utilizzabile nello sketch Arduino. Il modello esportato ottiene accuracy pari a 0.8180, F1-score pari a 0.8888 e Macro F1 pari a 0.6933.
+È stato realizzato un dimostratore Wokwi su ESP32 per simulare l'esecuzione embedded di un modello IDS compatto. L'exporter addestra una Logistic Regression binaria su dieci feature numeriche, normalizza le variabili, quantizza coefficienti e intercetta in `int16` e genera un header C++ utilizzabile nello sketch Arduino.
+
+Per distinguere l'effetto della quantizzazione dalle prestazioni del classificatore, l'exporter valuta sul medesimo test set di 42.209 record sia la pipeline Python originale in virgola mobile sia un'emulazione Python della formula quantizzata eseguita dal firmware. Entrambe le varianti ottengono accuracy 0.8180, F1-score 0.8888 e Macro F1 0.6933. L'accordo tra le predizioni è pari al 100%; le differenze di accuracy e Macro F1 sono entrambe 0.0000. Alla scala di quantizzazione adottata, quindi, l'arrotondamento dei coefficienti non altera le classi predette su questo test set. Il confronto non misura invece consumo energetico o latenza su hardware fisico.
 
 Il progetto Wokwi è disponibile al seguente indirizzo:
 
@@ -418,7 +424,7 @@ Il lavoro non deve essere interpretato come soluzione definitiva per la sicurezz
 
 In conclusione, la tesi dimostra che modelli di machine learning possono supportare efficacemente il rilevamento di intrusioni in ambienti IoT, purché siano inseriti in una strategia di sicurezza più ampia e valutati con attenzione rispetto a riproducibilità, interpretabilità, limiti del dataset e vincoli di deployment.
 
-## Bibliografia essenziale
+## Bibliografia
 
 [1] A. Alsaedi, N. Moustafa, Z. Tari, A. Mahmood e A. Anwar, "TON_IoT telemetry dataset: a new generation dataset of IoT and IIoT for data-driven intrusion detection systems", IEEE Access, vol. 8, pp. 165130-165150, 2020, doi: 10.1109/ACCESS.2020.3022862.
 

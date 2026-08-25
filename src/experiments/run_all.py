@@ -11,6 +11,12 @@ from src.utils.paths import ensure_directory, load_config, resolve_project_path
 
 
 def run() -> None:
+    """Run baselines, extended experiments, and tabular result summaries.
+
+    Interpretability, deployment analysis, embedded export, and MQTT/Wokwi
+    simulations remain separate opt-in runners because they have different
+    dependencies and execution environments.
+    """
     config = load_config()
     binary_metrics = run_binary.run()
     multiclass_metrics = run_multiclass.run()
@@ -25,6 +31,7 @@ def run() -> None:
         stream.write(f"Multiclass baseline rows: {len(multiclass_metrics)}\n")
         stream.write(f"Binary extended rows: {len(extended_outputs['binary'])}\n")
         stream.write(f"Multiclass extended rows: {len(extended_outputs['multiclass'])}\n")
+        stream.write("Not executed by run_all.py: SHAP interpretability, deployment analysis, embedded model export, MQTT/Wokwi simulation\n")
         stream.write("Generated summaries:\n")
         for name, path in summary_outputs.items():
             stream.write(f"- {name}: {path}\n")

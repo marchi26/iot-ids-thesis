@@ -130,13 +130,15 @@ Embedded ESP32/Wokwi model export:
 python src/experiments/export_embedded_model.py
 ```
 
-This command trains a compact binary Logistic Regression model on selected numeric TON_IoT features, exports quantized coefficients to `wokwi/ids_esp32/include/embedded_model.h`, and writes real metrics to `results/metrics/embedded_logistic_regression_metrics.csv`.
+This command trains a compact binary Logistic Regression model on selected numeric TON_IoT features, exports quantized coefficients to `wokwi/ids_esp32/include/embedded_model.h`, and compares the original floating-point Python model with an `int16` quantized emulation over the complete test set. Both rows are written to `results/metrics/embedded_logistic_regression_metrics.csv`.
 
-All experiments:
+Baselines, extended experiments, and result summaries:
 
 ```bash
 python src/experiments/run_all.py
 ```
+
+`run_all.py` executes `run_binary.py`, `run_multiclass.py`, `run_extended.py`, and `generate_result_summary.py`. It does not execute SHAP interpretability, deployment/compression analysis, embedded model export, or the MQTT/Wokwi simulation; use the dedicated commands above for those analyses.
 
 If the dataset is missing, the scripts stop with a clear message.
 

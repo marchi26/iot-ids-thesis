@@ -105,7 +105,7 @@ def table_of_contents() -> str:
         "Capitolo 4 - Risultati sperimentali",
         "Capitolo 5 - Discussione e strategie di mitigazione",
         "Capitolo 6 - Conclusioni",
-        "Bibliografia essenziale",
+        "Bibliografia",
     ]
     body = paragraph("Indice", "Heading1")
     for item in items:

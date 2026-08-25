@@ -90,6 +90,8 @@ def train_smote_comparison(
             y_pred, inference_time = measure_inference_time(trained_model, original.X_test)
             row = compute_classification_metrics(original.y_test, y_pred, model_name, mode, training_time, inference_time)
             row["balancing"] = label
+            row["training_samples"] = len(y_train)
+            row["test_samples"] = len(original.y_test)
             rows.append(row)
     return pd.DataFrame(rows)
 
@@ -164,6 +166,8 @@ def tune_models(
         )
         row["best_params"] = str(tuned_model.best_params_)
         row["best_cv_macro_f1"] = tuned_model.best_score_
+        row["training_samples"] = len(y_tune)
+        row["test_samples"] = len(prepared.y_test)
         rows.append(row)
     return pd.DataFrame(rows)
 
@@ -204,8 +208,7 @@ def train_additional_models(
             trained_model, training_time = measure_training_time(lambda model=model: model.fit(X_train_sample, y_train_sample))
             y_pred, inference_time = measure_inference_time(trained_model, prepared.X_test)
 
-        rows.append(
-            compute_classification_metrics(
+        row = compute_classification_metrics(
                 prepared.y_test,
                 y_pred,
                 model_name,
@@ -213,5 +216,7 @@ def train_additional_models(
                 training_time,
                 inference_time,
             )
-        )
+        row["training_samples"] = len(X_train_normal) if model_name == "isolation_forest" else len(y_train_sample)
+        row["test_samples"] = len(prepared.y_test)
+        rows.append(row)
     return pd.DataFrame(rows)

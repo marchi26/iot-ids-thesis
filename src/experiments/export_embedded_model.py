@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -8,7 +9,6 @@ import numpy as np
 import pandas as pd
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -17,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.data.load_data import DatasetNotFoundError, DatasetValidationError, load_ton_iot_dataset
 from src.data.preprocess import normalize_binary_target
-from src.models.evaluate import measure_inference_time, measure_training_time
+from src.models.evaluate import compute_classification_metrics, measure_inference_time, measure_training_time
 from src.utils.paths import ensure_directory, load_config, resolve_project_path
 
 
@@ -181,23 +181,47 @@ def run() -> pd.DataFrame:
     weights_q = np.clip(np.round(weights * quantization_scale), -32768, 32767).astype(np.int16)
     intercept_q = int(np.clip(round(intercept * quantization_scale), -32768, 32767))
 
-    metrics = {
-        "model": "embedded_logistic_regression",
-        "mode": "binary",
+    X_test_imputed = imputer.transform(X_test_raw)
+    X_test_scaled = scaler.transform(X_test_imputed)
+    quantized_start = time.perf_counter()
+    quantized_scores = (X_test_scaled @ (weights_q.astype(float) / quantization_scale)) + (
+        intercept_q / quantization_scale
+    )
+    y_pred_quantized = (quantized_scores >= 0.0).astype(int)
+    quantized_inference_time = time.perf_counter() - quantized_start
+
+    original_metrics = compute_classification_metrics(
+        y_test,
+        y_pred,
+        "embedded_logistic_regression",
+        "binary",
+        training_time,
+        inference_time,
+    )
+    quantized_metrics = compute_classification_metrics(
+        y_test,
+        y_pred_quantized,
+        "embedded_logistic_regression",
+        "binary",
+        0.0,
+        quantized_inference_time,
+    )
+    agreement = float(np.mean(y_pred == y_pred_quantized))
+    common_metrics = {
         "features": "|".join(EMBEDDED_FEATURES),
-        "accuracy": accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred, zero_division=0),
-        "recall": recall_score(y_test, y_pred, zero_division=0),
-        "f1_score": f1_score(y_test, y_pred, zero_division=0),
-        "macro_f1": f1_score(y_test, y_pred, average="macro", zero_division=0),
-        "weighted_f1": f1_score(y_test, y_pred, average="weighted", zero_division=0),
-        "training_time_seconds": training_time,
-        "inference_time_seconds": inference_time,
         "test_samples": len(y_test),
         "feature_count": len(EMBEDDED_FEATURES),
         "quantization_scale": quantization_scale,
+        "prediction_agreement": agreement,
         "header_path": HEADER_PATH.as_posix(),
     }
+    original_metrics.update(common_metrics)
+    original_metrics["evaluation_variant"] = "python_float64_before_quantization"
+    quantized_metrics.update(common_metrics)
+    quantized_metrics["evaluation_variant"] = "quantized_int16_emulation"
+    quantized_metrics["training_time_seconds"] = np.nan
+    quantized_metrics["accuracy_delta_vs_original"] = quantized_metrics["accuracy"] - original_metrics["accuracy"]
+    quantized_metrics["macro_f1_delta_vs_original"] = quantized_metrics["macro_f1"] - original_metrics["macro_f1"]
 
     header = build_header(
         EMBEDDED_FEATURES,
@@ -208,12 +232,12 @@ def run() -> pd.DataFrame:
         quantization_scale,
         samples,
         sample_labels,
-        metrics,
+        quantized_metrics,
     )
     header_path.write_text(header, encoding="utf-8")
     browser_header_path.write_text(header, encoding="utf-8")
 
-    output = pd.DataFrame([metrics])
+    output = pd.DataFrame([original_metrics, quantized_metrics])
     output_path = metrics_dir / METRICS_FILENAME
     output.to_csv(output_path, index=False)
     print(f"Embedded model header saved to {header_path}")
