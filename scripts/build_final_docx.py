@@ -229,8 +229,6 @@ def markdown_to_body(markdown: str, state: DocxBuildState) -> str:
             i += 1
             continue
         if line.startswith("## "):
-            if line.startswith("## Capitolo"):
-                elements.append(page_break())
             elements.append(paragraph(line[3:].strip(), "Heading1"))
             i += 1
             continue
@@ -368,9 +366,17 @@ def document(body: str) -> str:
 def build_docx() -> None:
     markdown = SOURCE.read_text(encoding="utf-8")
     abstract_index = markdown.find("## Abstract")
-    content_markdown = markdown[abstract_index:] if abstract_index >= 0 else markdown
+    chapter_index = markdown.find("## Capitolo 1")
+    abstract_markdown = markdown[abstract_index:chapter_index] if abstract_index >= 0 and chapter_index > abstract_index else ""
+    main_markdown = markdown[chapter_index:] if chapter_index >= 0 else markdown
     state = DocxBuildState()
-    body = cover_page() + table_of_contents() + markdown_to_body(content_markdown, state)
+    body = (
+        cover_page()
+        + markdown_to_body(abstract_markdown, state)
+        + page_break()
+        + table_of_contents()
+        + markdown_to_body(main_markdown, state)
+    )
     with zipfile.ZipFile(OUTPUT, "w", compression=zipfile.ZIP_DEFLATED) as docx:
         docx.writestr("[Content_Types].xml", content_types())
         docx.writestr("_rels/.rels", rels())

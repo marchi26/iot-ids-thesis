@@ -30,3 +30,4 @@ dist/
 wokwi/**/.pio/
 wokwi/**/*.bin
 wokwi/**/*.elf
+thesis/submission/

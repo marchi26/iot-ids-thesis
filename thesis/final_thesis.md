@@ -8,16 +8,11 @@ Relatore: Prof. Oleksandr Kuznetsov
 
 ## Abstract
 
-La diffusione dei sistemi Internet of Things ha modificato in modo significativo il modo in cui dispositivi, servizi digitali e infrastrutture fisiche interagiscono tra loro. Sensori, attuatori, gateway, broker di messaggistica e piattaforme cloud consentono di raccogliere dati in tempo reale e di automatizzare processi in ambito domestico, industriale, sanitario, urbano e logistico. Questa evoluzione ha ampliato la superficie di attacco delle reti moderne: molti dispositivi IoT sono caratterizzati da risorse computazionali limitate, cicli di aggiornamento discontinui, configurazioni deboli, protocolli esposti e livelli di protezione non sempre comparabili a quelli dei sistemi informatici tradizionali.
+La crescente diffusione dei sistemi Internet of Things amplia la superficie di attacco delle reti, nelle quali dispositivi con risorse limitate, configurazioni deboli e aggiornamenti discontinui possono diventare punti di ingresso per attività malevole. Questa tesi analizza l'impiego di Intrusion Detection Systems basati su machine learning e sviluppa una pipeline riproducibile per la classificazione del traffico IoT sul dataset TON_IoT/UNSW, utilizzando il file `train_test_network.csv` in modalità binaria e multiclasse.
 
-La presente tesi analizza il tema della sicurezza nei sistemi Internet of Things con particolare attenzione agli Intrusion Detection Systems basati su tecniche di machine learning. L'obiettivo sperimentale consiste nella costruzione di un progetto software riproducibile per la classificazione del traffico IoT, partendo dal repository di riferimento indicato dal relatore e riorganizzandolo in una struttura modulare, documentata e adatta alla prosecuzione del lavoro di tesi. Il dataset utilizzato è TON_IoT/UNSW, in particolare il file `train_test_network.csv`, impiegato per esperimenti di classificazione binaria e multiclasse.
+La metodologia comprende validazione dei dati, preprocessing senza contaminazione tra training e test set, codifica delle variabili categoriche, normalizzazione, split stratificato e valutazione mediante accuracy, precision, recall, F1-score, Macro F1 e Weighted F1. La baseline confronta Random Forest, LightGBM, XGBoost e Logistic Regression. Gli esperimenti estesi includono SMOTE, tuning iperparametrico, MLPClassifier, Isolation Forest, analisi SHAP, misure di latenza e dimensione degli artefatti, compressione e un dimostratore embedded simulato su ESP32 tramite Wokwi.
 
-La pipeline sviluppata comprende validazione del dataset, preprocessing, codifica delle variabili categoriche, normalizzazione delle feature numeriche, suddivisione train/test stratificata, addestramento di modelli baseline e generazione automatica di metriche, tabelle e grafici. I modelli baseline valutati sono Random Forest, LightGBM, XGBoost e Logistic Regression. A questi sono stati aggiunti esperimenti estesi riguardanti il bilanciamento tramite SMOTE, il tuning iperparametrico, MLPClassifier, Isolation Forest, analisi di interpretabilità, misure di latenza, compressione degli artefatti e un dimostratore embedded su ESP32 tramite Wokwi.
-
-I risultati sperimentali indicano prestazioni molto elevate per i modelli ensemble, in particolare LightGBM, sia nella classificazione binaria sia nella classificazione multiclasse. Logistic Regression risulta meno performante, ma mantiene una maggiore semplicità e costituisce una base utile per discutere scenari embedded. Il dimostratore Wokwi mostra l'esecuzione simulata di un modello compatto con coefficienti quantizzati, evidenziando il compromesso tra accuratezza, semplicità computazionale e portabilità su dispositivi IoT.
-
-L'elaborato non si limita al confronto tra modelli, ma collega i risultati sperimentali al problema più generale della sicurezza IoT. Vengono quindi discusse strategie di mitigazione quali segmentazione della rete, hardening dei dispositivi, aggiornamenti firmware, autenticazione forte, inventario degli asset, logging, monitoraggio del traffico, anomaly detection e principi zero trust. Il lavoro fornisce una base sperimentale concreta e riproducibile, completata da analisi SHAP, misure orientate al deployment e simulazione embedded; drift, traffico live e hardware fisico sono delimitati come ambiti non coperti dall'esperimento.
-
+I risultati mostrano prestazioni particolarmente elevate per i modelli ensemble, con LightGBM migliore nella baseline binaria e multiclasse. Logistic Regression presenta prestazioni inferiori, ma offre semplicità, bassa latenza e maggiore facilità di portabilità. Il confronto tra modello Python e coefficienti quantizzati chiarisce il costo della semplificazione richiesta dal deployment embedded. La tesi collega infine i risultati a strategie di mitigazione quali segmentazione, hardening, aggiornamenti firmware, autenticazione forte, inventario degli asset, logging e principi zero trust. Il lavoro costituisce una base sperimentale completa e riproducibile; traffico live, drift e validazione su hardware fisico restano sviluppi futuri.
 ## Capitolo 1 - Introduzione
 
 ### 1.1 Contesto dei sistemi Internet of Things
@@ -216,6 +211,8 @@ I risultati vanno interpretati tenendo conto del contesto sperimentale. Il datas
 
 ### 4.2 Risultati baseline nella classificazione binaria
 
+**Tabella 1 - Prestazioni dei modelli baseline nella classificazione binaria**
+
 | Modello | Accuracy | F1-score | Macro F1 | Training (s) | Inference (s) |
 |---|---:|---:|---:|---:|---:|
 | Random Forest | 0.9988 | 0.9992 | 0.9983 | 24.43 | 0.283 |
@@ -234,6 +231,8 @@ La matrice di confusione di LightGBM mostra 9987 campioni normali classificati c
 ![Figura 5 - Matrice di confusione LightGBM nella classificazione binaria](results/plots/binary_lightgbm_confusion_matrix.png)
 
 ### 4.3 Risultati baseline nella classificazione multiclasse
+
+**Tabella 2 - Prestazioni dei modelli baseline nella classificazione multiclasse**
 
 | Modello | Accuracy | Weighted F1 | Macro F1 | Training (s) | Inference (s) |
 |---|---:|---:|---:|---:|---:|
