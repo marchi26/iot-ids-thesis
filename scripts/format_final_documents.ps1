@@ -5,8 +5,8 @@ $pdfPath = Join-Path $RepositoryRoot 'thesis\final_thesis_revisionata.pdf'
 $abstractDocx = Join-Path $RepositoryRoot 'thesis\abstract_tesi.docx'
 $abstractPdf = Join-Path $RepositoryRoot 'thesis\abstract_tesi.pdf'
 $submissionDir = Join-Path $RepositoryRoot 'thesis\submission'
-$signedDocx = Join-Path $submissionDir 'tesi_deposito_firmata_finale.docx'
-$signedPdf = Join-Path $submissionDir 'tesi_deposito_firmata_finale.pdf'
+$signedDocx = Join-Path $submissionDir 'tesi_deposito_firmata_definitiva.docx'
+$signedPdf = Join-Path $submissionDir 'tesi_deposito_firmata_definitiva.pdf'
 $wdAlignCenter=1; $wdAlignJustify=3; $wdCollapseEnd=0; $wdSectionBreakNextPage=2
 $wdPageLowerRoman=2; $wdPageArabic=0; $wdFieldEmpty=-1; $wdFormatDocx=16; $wdExportPdf=17
 $word=$null; $doc=$null; $summary=$null; $signed=$null
@@ -149,6 +149,21 @@ Firma: ______________________________
     }
     $table.Rows.Item($table.Rows.Count).Range.ParagraphFormat.KeepTogether=-1
   }
+  $inBibliography=$false
+  foreach($p in @($doc.Paragraphs)){
+    $t=$p.Range.Text.Trim([char]13,[char]7,' ')
+    if($t -eq 'Bibliografia'){$inBibliography=$true; continue}
+    if($inBibliography -and $t -match '^\[\d+\]'){
+      $p.Range.Font.Name='Times New Roman'; $p.Range.Font.Size=11
+      $p.Range.ParagraphFormat.LeftIndent=$word.CentimetersToPoints(0.75)
+      $p.Range.ParagraphFormat.FirstLineIndent=-$word.CentimetersToPoints(0.75)
+      $p.Range.ParagraphFormat.LineSpacingRule=0
+      $p.Range.ParagraphFormat.SpaceBefore=0
+      $p.Range.ParagraphFormat.SpaceAfter=6
+      $p.Range.ParagraphFormat.WidowControl=-1
+      $p.Range.ParagraphFormat.KeepTogether=-1
+    }
+  }
   $bodySearch=$doc.Content.Duplicate
   $bodySearch.Start=$doc.TablesOfContents.Item(3).Range.End
   $bodySearch.Find.Text='Capitolo 1 - Introduzione'
@@ -185,6 +200,13 @@ Firma: ______________________________
   $doc.Repaginate()
   $doc.Fields.Update() | Out-Null
   foreach($toc in @($doc.TablesOfContents)){$toc.Update()}
+  $mainToc=$doc.TablesOfContents.Item(1)
+  $mainToc.Range.Font.Name='Times New Roman'; $mainToc.Range.Font.Size=10
+  $mainToc.Range.ParagraphFormat.LineSpacingRule=0
+  $mainToc.Range.ParagraphFormat.SpaceBefore=0; $mainToc.Range.ParagraphFormat.SpaceAfter=0
+  $mainToc.Range.ParagraphFormat.WidowControl=-1
+  $doc.Repaginate()
+  $mainToc.UpdatePageNumbers()
   $doc.Save()
   $pdfTemp=Join-Path $RepositoryRoot 'thesis\final_thesis.new.pdf'
   Remove-Item -LiteralPath $pdfTemp -Force -ErrorAction SilentlyContinue

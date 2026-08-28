@@ -377,19 +377,7 @@ Gli aggiornamenti firmware sono essenziali per correggere vulnerabilità note. T
 
 Il monitoraggio del traffico e il logging centralizzato permettono di rilevare anomalie e ricostruire incidenti. Un IDS può generare alert, ma tali alert devono essere integrati in un processo operativo: classificazione della severità, verifica, risposta, escalation e miglioramento delle regole o dei modelli.
 
-### 5.6 Domande tecniche prevedibili
-
-Perché LightGBM è risultato il modello migliore? LightGBM è un modello di gradient boosting efficiente su dati tabulari. Nel dataset utilizzato ha mostrato il miglior equilibrio tra accuracy, Macro F1 e tempi di training.
-
-Perché SMOTE non migliora sempre? SMOTE genera campioni sintetici, ma non garantisce automaticamente un miglioramento. Se il modello gestisce già bene lo sbilanciamento o se i campioni sintetici non aggiungono informazione utile, il beneficio può essere nullo.
-
-Perché Isolation Forest ha prestazioni inferiori? Isolation Forest è non supervisionato e non utilizza direttamente le etichette di attacco durante l'addestramento. I modelli supervisionati dispongono di più informazione e risultano avvantaggiati in un dataset etichettato.
-
-Perché il modello Wokwi non è LightGBM? Il dimostratore Wokwi serve a mostrare un modello compatto esportabile in firmware. Logistic Regression è più semplice da convertire in codice C++ minimale, mentre LightGBM richiederebbe una strategia di esportazione più complessa.
-
-Il progetto è pronto per un deployment reale? No. Il progetto è una base sperimentale riproducibile. Un deployment reale richiederebbe test su traffico live, gestione del drift, pipeline di aggiornamento, integrazione con logging e alerting, hardening dell'ambiente e validazione su hardware fisico.
-
-### 5.7 Possibile percorso verso una validazione su hardware reale
+### 5.6 Possibile percorso verso una validazione su hardware reale
 
 Il passaggio da simulazione a hardware reale richiede una sequenza di attività progressive. In primo luogo, occorre scegliere il dispositivo target, ad esempio un ESP32 o un gateway edge più potente. In secondo luogo, occorre stabilire quali feature siano effettivamente disponibili sul dispositivo. Un modello addestrato su feature di flusso di rete non può essere eseguito direttamente su un sensore se quel sensore non osserva tali feature.
 
@@ -397,7 +385,7 @@ In terzo luogo, è necessario definire come raccogliere i dati in tempo reale. U
 
 Il dimostratore Wokwi copre solo una parte di questo percorso: mostra che una forma compatta del modello può essere eseguita in un ambiente simulato. La validazione su dispositivi reali richiederebbe esperimenti aggiuntivi in laboratorio, con misurazioni fisiche e traffico generato o raccolto in condizioni controllate.
 
-### 5.8 Indicazioni operative per un IDS IoT
+### 5.7 Indicazioni operative per un IDS IoT
 
 Un IDS IoT dovrebbe essere progettato come componente di una catena operativa. Il primo passo è l'inventario dei dispositivi: senza sapere quali dispositivi sono presenti, è impossibile definire comportamento atteso e priorità. Il secondo passo è la segmentazione: i dispositivi IoT dovrebbero comunicare solo con i servizi necessari. Il terzo passo è la raccolta dei log e dei flussi di rete.
 
@@ -405,7 +393,7 @@ Una volta raccolti i dati, il modello IDS può generare alert. Tuttavia, gli ale
 
 È inoltre necessario stabilire una procedura di aggiornamento. Un modello addestrato una volta può diventare obsoleto. Nuovi dispositivi e nuovi attacchi richiedono raccolta periodica di dati, rivalutazione delle metriche e rilascio controllato di nuove versioni del modello.
 
-### 5.9 Considerazioni etiche e di gestione dei dati
+### 5.8 Considerazioni etiche e di gestione dei dati
 
 Il monitoraggio del traffico IoT può coinvolgere dati sensibili. Anche quando il dataset usato in tesi è pubblico o scaricato per finalità di ricerca, in un contesto reale la raccolta di traffico deve rispettare principi di minimizzazione, protezione e controllo degli accessi. I dati raccolti da dispositivi domestici, sanitari o industriali possono rivelare abitudini, processi o informazioni riservate.
 
