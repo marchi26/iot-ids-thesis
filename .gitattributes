@@ -1,0 +1,7 @@
+/research/ton_iot_audit/report.pdf binary
+/research/ton_iot_audit/results/full_audit/*.json -text
+/scripts/audit_ton_iot_split.py text eol=lf
+/scripts/build_ton_iot_audit_report.py text eol=lf
+/scripts/check_ton_iot_audit.py text eol=lf
+/scripts/test_audit_ton_iot_split.py text eol=lf
+/scripts/verify_ton_iot_audit.py text eol=lf

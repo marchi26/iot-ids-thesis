@@ -1,0 +1,6 @@
+task,audit,train_rows,test_rows,train_duplicate_groups,train_involved_rows,train_excess_rows,test_duplicate_groups,test_involved_rows,test_excess_rows,shared_groups,exposed_test_rows,exposed_test_percent,conflicting_groups_all,conflicting_rows_all,shared_conflicting_groups
+binary,A_full_row,168834,42209,5205,20432,15227,663,3174,2511,2831,5099,12.080362008102536,0,0,0
+binary,B_baseline,168834,42209,7480,27805,20325,1078,4136,3058,4111,6869,16.273780473358762,0,0,0
+binary,B_embedded,168834,42209,11804,36618,24814,1398,4793,3395,6276,9071,21.490677343694472,2,102,1
+multiclass,A_full_row,168834,42209,5219,20400,15181,668,3211,2543,2845,5156,12.215404297661635,0,0,0
+multiclass,B_baseline,168834,42209,7449,27697,20248,1079,4167,3088,4158,6963,16.49648179298254,11,43,5

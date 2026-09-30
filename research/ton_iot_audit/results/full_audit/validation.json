@@ -1,0 +1,29 @@
+{
+  "started_at_utc": "2026-09-29T12:29:40.974548+00:00",
+  "finished_at_utc": "2026-09-29T12:31:23.817687+00:00",
+  "audit_manifest_sha256": "adca13d9659e3960bbce8e712581ba07035029ef26d4ceb6da263694f3d959c1",
+  "validator_source_sha256": "cae822bb7aaa2a3407a58536691d70fefb73d9b5364378e5b5b990b26589765f",
+  "checks": [
+    {
+      "name": "synthetic_and_input_validation_tests",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_all_missing_column (__main__.AuditTests.test_all_missing_column) ... ok\ntest_changed_initial_artifact_rejected (__main__.AuditTests.test_changed_initial_artifact_rejected) ... ok\ntest_class_absent_from_test (__main__.AuditTests.test_class_absent_from_test) ... ok\ntest_counts_are_rows_not_matching_pairs (__main__.AuditTests.test_counts_are_rows_not_matching_pairs) ... ok\ntest_initial_directory_cannot_be_overwritten (__main__.AuditTests.test_initial_directory_cannot_be_overwritten) ... ok\ntest_invalid_partitions_rejected (__main__.AuditTests.test_invalid_partitions_rejected) ... ok\ntest_known_counts_and_conflicts (__main__.AuditTests.test_known_counts_and_conflicts) ... ok\ntest_missing_dataset_creates_no_results (__main__.AuditTests.test_missing_dataset_creates_no_results) ... ok\ntest_missing_values_and_no_rounding (__main__.AuditTests.test_missing_values_and_no_rounding) ... ok\ntest_no_overlap (__main__.AuditTests.test_no_overlap) ... ok\ntest_random_small_frames_match_independent_verifier (__main__.AuditTests.test_random_small_frames_match_independent_verifier) ... ok\ntest_wrong_dataset_hash_rejected_before_parsing (__main__.AuditTests.test_wrong_dataset_hash_rejected_before_parsing) ... ok\n\n----------------------------------------------------------------------\nRan 12 tests in 0.728s\n\nOK"
+    },
+    {
+      "name": "independent_tuple_recount",
+      "exit_code": 0,
+      "stdout": "binary/A_full_row: every summary and per-class field agrees with independent tuple counts\nbinary/B_baseline: every summary and per-class field agrees with independent tuple counts\nbinary/B_embedded: every summary and per-class field agrees with independent tuple counts\nmulticlass/A_full_row: every summary and per-class field agrees with independent tuple counts\nmulticlass/B_baseline: every summary and per-class field agrees with independent tuple counts\nDataset, frozen indices, artifact hashes, counts and percentages: verified",
+      "stderr": ""
+    },
+    {
+      "name": "repeat_audit",
+      "exit_code": 0,
+      "stdout": "task      audit  train_rows  test_rows  train_duplicate_groups  train_involved_rows  train_excess_rows  test_duplicate_groups  test_involved_rows  test_excess_rows  shared_groups  exposed_test_rows  exposed_test_percent  conflicting_groups_all  conflicting_rows_all  shared_conflicting_groups\n    binary A_full_row      168834      42209                    5205                20432              15227                    663                3174              2511           2831               5099             12.080362                       0                     0                          0\n    binary B_baseline      168834      42209                    7480                27805              20325                   1078                4136              3058           4111               6869             16.273780                       0                     0                          0\n    binary B_embedded      168834      42209                   11804                36618              24814                   1398                4793              3395           6276               9071             21.490677                       2                   102                          1\nmulticlass A_full_row      168834      42209                    5219                20400              15181                    668                3211              2543           2845               5156             12.215404                       0                     0                          0\nmulticlass B_baseline      168834      42209                    7449                27697              20248                   1079                4167              3088           4158               6963             16.496482                      11                    43                          5",
+      "stderr": ""
+    }
+  ],
+  "repeated_csv_hashes_identical": true,
+  "initial_delivery_unchanged": true,
+  "repeat_provenance": "Fresh temporary output directory, same interpreter and installed environment. Timestamps and output paths differ; scientific inputs and output hashes match."
+}
