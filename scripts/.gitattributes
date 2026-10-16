@@ -1,0 +1,3 @@
+build_overlap_partitions.py text eol=lf
+verify_overlap_partitions.py text eol=lf
+test_overlap_partitions.py text eol=lf

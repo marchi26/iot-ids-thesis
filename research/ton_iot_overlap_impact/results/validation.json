@@ -1,0 +1,98 @@
+{
+  "manifest_sha256": "1b36b7a4c2726b8fa47bbd8a6fc335b0d0d95604c6d47961554e9956961d7d92",
+  "verifier_sha256": "f0db86081e49fcec5519f6308919ea2e1aa44f2e6c59a2cb5189edee15911326",
+  "training_executed": false,
+  "synthetic_tests": {
+    "source_sha256": "38c6885d51fce42ff1b1a20362d1f0f1386ac69b4be56c1c930d0ee74ab0439f",
+    "exit_code": 0,
+    "output": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.051s\n\nOK\n"
+  },
+  "configuration_checks": [
+    {
+      "configuration": "fixed_A",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_B",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_1009",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_601",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_701",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_809",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_907",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_101",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_211",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_307",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_401",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_503",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_101",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_211",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_307",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_401",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_503",
+      "checks_passed": true,
+      "all_classes_present": true
+    }
+  ],
+  "status": "PASS"
+}

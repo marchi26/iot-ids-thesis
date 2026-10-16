@@ -1,0 +1,228 @@
+{
+  "stage": "SPLIT-02 feasibility only; no model or transformer fit",
+  "started_at_utc": "2026-10-14T16:58:39.548264+00:00",
+  "execution_commit": "2de1f57196f98d2f23411d7ec0aa6db8c055a653",
+  "branch": "research/ton-iot-overlap-impact",
+  "working_tree_status_at_start": "?? scripts/build_overlap_partitions.py",
+  "command": "python scripts/build_overlap_partitions.py",
+  "output": "research\\ton_iot_overlap_impact\\results",
+  "dataset": {
+    "filename": "train_test_network.csv",
+    "sha256": "26ddc513552de36de6428b2e578efaed2b57504c716dfba847cc0109a64e1974",
+    "bytes": 29902775,
+    "rows": 211043,
+    "columns": 44,
+    "parser": "pyarrow"
+  },
+  "python": "3.11.9",
+  "packages": {
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "scikit-learn": "1.9.0",
+    "scipy": "1.17.1",
+    "imbalanced-learn": "0.14.2",
+    "pyarrow": "24.0.0",
+    "PyYAML": "6.0.3",
+    "joblib": "1.5.3",
+    "threadpoolctl": "3.6.0",
+    "python-dateutil": "2.9.0.post0",
+    "six": "1.17.0",
+    "tzdata": "2026.2",
+    "narwhals": "2.23.0",
+    "sklearn-compat": "0.1.6"
+  },
+  "initial_manifest_sha256": "7780713fc1861789e68f736f252e79583ef476976b745d95a756f94fa9ba72e0",
+  "source_sha256": {
+    "scripts/build_overlap_partitions.py": "0757b7c77e334fa56bea2b81ac9e43072368c3830a025b150860cb4e3b6763b3",
+    "scripts/audit_ton_iot_split.py": "2296d63e099022d14865f0139eda774a401113dd749661ce1447c41903aa6cca",
+    "src/data/preprocess.py": "4d089224ff57c777e55bc710503470407a6bdc51b673602ec5954a3426847252"
+  },
+  "split_seeds": [
+    101,
+    211,
+    307,
+    401,
+    503
+  ],
+  "removal_seeds": [
+    601,
+    701,
+    809,
+    907,
+    1009
+  ],
+  "inner_seed": 1201,
+  "model_seed_proposed": 1103,
+  "group_definition": "Exact parsed 32-feature vector; missing values equal in the same column; no digest-based grouping",
+  "group_id_definition": "First occurrence ordinal in the frozen CSV; independently verified with full tuples",
+  "all_groups": 183549,
+  "conflicting_groups": 11,
+  "configuration_count": 17,
+  "coverage_checks": [
+    {
+      "configuration": "fixed_A",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "fixed_B",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "fixed_C_601",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "fixed_C_701",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "fixed_C_809",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "fixed_C_907",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "fixed_C_1009",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "random_101",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "group_101",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "random_211",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "group_211",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "random_307",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "group_307",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "random_401",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "group_401",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "random_503",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    },
+    {
+      "configuration": "group_503",
+      "missing_classes": {
+        "train": [],
+        "validation": [],
+        "test": []
+      },
+      "class_coverage_pass": true
+    }
+  ],
+  "training_authorized": false,
+  "feasible_all_classes": true,
+  "artifacts_sha256": {
+    "class_counts.csv": "e52e80cd130620f7cf2337e823f86deec7f30ca95a0f033f5af57a4ced847895",
+    "feasibility.csv": "d85c80b0336d722c2561996fa2bee7a32acb751dae3add1654fa71f3bff5f901",
+    "feature_columns.csv": "0fd52e96a06a2c30a4a1a9f5c32d7662a0e77be9b30f69362b1a8deda82967f9",
+    "fixed_test_subgroups.csv.gz": "a0e2c76e6d6311b75f4b9bd16a2900b62356a6fae77f3cb0da7c8505d5dd013b",
+    "label_conflicts.csv": "88a3680ccbf9268f7471d5e5d60afa6bf34b56465c7453fe2013955db73eba5a",
+    "partition_indices.csv.gz": "b5ddb89877dc94a05c93bc05e7ea88a3d372e85963a5011a2e68db7b32eab1f7",
+    "row_groups.csv.gz": "a9b35ff8a9db5e8f0fa98a0e6b7e36dbfafefc3f756c363d9d246a43e01f5174"
+  },
+  "elapsed_seconds": 1362.348103400087
+}
