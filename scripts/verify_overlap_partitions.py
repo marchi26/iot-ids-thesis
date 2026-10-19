@@ -1,5 +1,6 @@
 """Verify saved SPLIT-02 artifacts independently of the splitting algorithm."""
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -11,12 +12,30 @@ import pandas as pd
 from audit_ton_iot_split import ROOT, require, sha256
 
 
+def verify_source(path, expected):
+    """Match the historical digest exactly, allowing only LF/CRLF conversion."""
+    raw = path.read_bytes()
+    actual = hashlib.sha256(raw).hexdigest()
+    method = "exact"
+    if actual != expected:
+        # Reconstruct uniform newline variants, not a new reference digest.
+        # Bare CR, whitespace, BOM and the final newline remain significant.
+        lf = raw.replace(b"\r\n", b"\n")
+        for method, candidate in (("lf", lf), ("crlf", lf.replace(b"\n", b"\r\n"))):
+            if hashlib.sha256(candidate).hexdigest() == expected:
+                break
+        else:
+            raise ValueError(f"Execution source changed (not only LF/CRLF): {path}")
+    return {"historical_sha256": expected, "checkout_sha256": actual,
+            "matched_variant": method}
+
+
 def verify(directory):
     manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
     for name, expected in manifest["artifacts_sha256"].items():
         require(sha256(directory / name) == expected, f"Artifact changed: {name}")
-    for name, expected in manifest["source_sha256"].items():
-        require(sha256(ROOT / name) == expected, f"Execution source changed: {name}")
+    source_checks = {name: verify_source(ROOT / name, expected)
+                     for name, expected in manifest["source_sha256"].items()}
     membership = pd.read_csv(directory / "row_groups.csv.gz").set_index("row_id")
     indices = pd.read_csv(directory / "partition_indices.csv.gz")
     summaries = pd.read_csv(directory / "feasibility.csv").set_index("configuration")
@@ -64,6 +83,7 @@ def verify(directory):
     require(tests.returncode == 0, f"Synthetic tests failed: {tests.stderr}")
     report = {"manifest_sha256": sha256(directory / "manifest.json"),
               "verifier_sha256": sha256(Path(__file__)), "training_executed": False,
+              "source_checks": source_checks,
               "synthetic_tests": {"source_sha256": sha256(test_script), "exit_code": tests.returncode,
                                   "output": tests.stdout + tests.stderr},
               "configuration_checks": checked, "status": "PASS"}

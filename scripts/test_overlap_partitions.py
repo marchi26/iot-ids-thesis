@@ -1,10 +1,59 @@
 """Synthetic tests for SPLIT-02; no model fitting."""
+import hashlib
+import tempfile
 import unittest
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 from build_overlap_partitions import exact_groups, matched_control, remove_overlap, validate, group_split
+from verify_overlap_partitions import verify_source
+
+
+class SourceHashTests(unittest.TestCase):
+    def check_source(self, historical, checkout):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "source.py"
+            path.write_bytes(checkout)
+            expected = hashlib.sha256(historical).hexdigest()
+            result = verify_source(path, expected)
+            self.assertEqual(path.read_bytes(), checkout)
+            self.assertEqual(result["historical_sha256"], expected)
+            self.assertEqual(result["checkout_sha256"], hashlib.sha256(checkout).hexdigest())
+            return result
+
+    def test_exact_bytes(self):
+        for data in (b"x = 1\n", b"x = 1\r\n", b"x = 1\r\ny = 2\n"):
+            with self.subTest(data=data):
+                self.assertEqual(self.check_source(data, data)["matched_variant"], "exact")
+
+    def test_lf_checkout_matches_historical_crlf(self):
+        self.assertEqual(self.check_source(b"x = 1\r\ny = 2\r\n", b"x = 1\ny = 2\n")
+                         ["matched_variant"], "crlf")
+
+    def test_crlf_checkout_matches_historical_lf(self):
+        self.assertEqual(self.check_source(b"x = 1\ny = 2\n", b"x = 1\r\ny = 2\r\n")
+                         ["matched_variant"], "lf")
+
+    def test_mixed_checkout_matches_uniform_history(self):
+        self.assertEqual(self.check_source(b"x = 1\ny = 2\n", b"x = 1\r\ny = 2\n")
+                         ["matched_variant"], "lf")
+
+    def test_real_edits_rejected_with_newline_conversion(self):
+        for changed in (b"x = 2\n", b"x=1\n", b"x = 1 \n", b"x = 1\n# comment\n",
+                        b"x = 1", b"x = 1\n\n", b"\xef\xbb\xbfx = 1\n", b"x = 1\r"):
+            with self.subTest(changed=changed), self.assertRaisesRegex(ValueError, "not only LF/CRLF"):
+                self.check_source(b"x = 1\r\n", changed)
+
+    def test_unmatched_historical_digest_rejected(self):
+        # No historical mixed-newline layout is guessed from an unknown digest.
+        with self.assertRaises(ValueError):
+            self.check_source(b"x = 1\r\ny = 2\n", b"x = 1\ny = 2\n")
+
+    def test_missing_source_rejected(self):
+        with tempfile.TemporaryDirectory() as directory, self.assertRaises(FileNotFoundError):
+            verify_source(Path(directory) / "missing.py", "0" * 64)
 
 
 class PartitionTests(unittest.TestCase):

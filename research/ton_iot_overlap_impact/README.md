@@ -30,3 +30,18 @@ The execution HEAD is the parent commit, not a claim that uncommitted new script
 `validation.json` is a separate verification record linked to the manifest hash. It verifies saved row coverage, per-class counts, overlap counts and matched removals without rerunning the splitter. It is not evidence of a second full dataset execution.
 
 Review and approval of the protocol are required before implementing/running the model pilot. The available partition statistics do not establish an effect on accuracy or F1.
+
+## Source hashes across Windows and Linux
+
+The historical manifest records byte-level hashes from the execution environment. Git can check out `src/data/preprocess.py` with CRLF on Windows and LF on Linux. The verifier first checks the unchanged historical hash against the current bytes. If it differs, it tries only LF and CRLF variants in memory; one must reproduce that same historical hash. It does not strip whitespace, decode/re-encode the file or replace the reference hash. Other changes fail verification. An unknown historical mixed-newline layout is not reconstructed and also fails unless the bytes match exactly.
+
+The printed report includes `source_checks`, with the historical hash, checkout hash and matching variant (`exact`, `lf` or `crlf`). Dataset-derived artifacts still require exact byte matches. The committed `manifest.json` and `validation.json` remain unchanged; the latter records the original verifier and its eight tests, not this correction.
+
+To check the existing delivery without rebuilding partitions or overwriting historical records, run:
+
+```sh
+python scripts/test_overlap_partitions.py
+python scripts/verify_overlap_partitions.py
+```
+
+Use the pinned environment described above. Do not use `--save` for the existing results directory, which already contains the historical validation record. These checks do not train models.
