@@ -1,0 +1,4 @@
+subgroup,rows,groups,classes_present,replicates,replicates_missing_class,complete_class_replicates
+all,42209,39121,backdoor;ddos;dos;injection;mitm;normal;password;ransomware;scanning;xss,2000,0,2000
+exposed,6963,4158,backdoor;ddos;dos;injection;mitm;normal;password;ransomware;scanning;xss,2000,302,1698
+non_exposed,35246,34963,backdoor;ddos;dos;injection;mitm;normal;password;ransomware;scanning;xss,2000,0,2000

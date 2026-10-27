@@ -1,0 +1,115 @@
+{
+  "manifest_sha256": "1b36b7a4c2726b8fa47bbd8a6fc335b0d0d95604c6d47961554e9956961d7d92",
+  "verifier_sha256": "0b3e4b035407b85f6314f84adb51eaab7b07987193472cc579cdae4058dac09e",
+  "training_executed": false,
+  "source_checks": {
+    "scripts/build_overlap_partitions.py": {
+      "historical_sha256": "0757b7c77e334fa56bea2b81ac9e43072368c3830a025b150860cb4e3b6763b3",
+      "checkout_sha256": "0757b7c77e334fa56bea2b81ac9e43072368c3830a025b150860cb4e3b6763b3",
+      "matched_variant": "exact"
+    },
+    "scripts/audit_ton_iot_split.py": {
+      "historical_sha256": "2296d63e099022d14865f0139eda774a401113dd749661ce1447c41903aa6cca",
+      "checkout_sha256": "2296d63e099022d14865f0139eda774a401113dd749661ce1447c41903aa6cca",
+      "matched_variant": "exact"
+    },
+    "src/data/preprocess.py": {
+      "historical_sha256": "4d089224ff57c777e55bc710503470407a6bdc51b673602ec5954a3426847252",
+      "checkout_sha256": "4d089224ff57c777e55bc710503470407a6bdc51b673602ec5954a3426847252",
+      "matched_variant": "exact"
+    }
+  },
+  "synthetic_tests": {
+    "source_sha256": "4edb5ccff90d4c57121b0acdd60a92e3d44ad1e7cb9d6533d2e695371e6805cd",
+    "exit_code": 0,
+    "output": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.177s\n\nOK\n"
+  },
+  "configuration_checks": [
+    {
+      "configuration": "fixed_A",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_B",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_1009",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_601",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_701",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_809",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "fixed_C_907",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_101",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_211",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_307",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_401",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "group_503",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_101",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_211",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_307",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_401",
+      "checks_passed": true,
+      "all_classes_present": true
+    },
+    {
+      "configuration": "random_503",
+      "checks_passed": true,
+      "all_classes_present": true
+    }
+  ],
+  "status": "PASS"
+}

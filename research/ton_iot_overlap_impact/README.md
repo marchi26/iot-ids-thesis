@@ -31,6 +31,10 @@ The execution HEAD is the parent commit, not a claim that uncommitted new script
 
 Review and approval of the protocol are required before implementing/running the model pilot. The available partition statistics do not establish an effect on accuracy or F1.
 
+## Approved fixed-test pilot
+
+After approval of checkpoint `af97421`, the supervisor authorized 28 LR/RF fits on A/B and all five C controls. The random/group-disjoint training comparison remains deferred. The separate [pilot directory](pilot/README.md) contains execution instructions and outputs; the checkpoint files above remain the historical feasibility record.
+
 ## Source hashes across Windows and Linux
 
 The historical manifest records byte-level hashes from the execution environment. Git can check out `src/data/preprocess.py` with CRLF on Windows and LF on Linux. The verifier first checks the unchanged historical hash against the current bytes. If it differs, it tries only LF and CRLF variants in memory; one must reproduce that same historical hash. It does not strip whitespace, decode/re-encode the file or replace the reference hash. Other changes fail verification. An unknown historical mixed-newline layout is not reconstructed and also fails unless the bytes match exactly.

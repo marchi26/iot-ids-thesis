@@ -1,0 +1,38 @@
+{
+  "phase": "diagnostic",
+  "configuration": "fixed_B",
+  "model": "logistic_regression",
+  "params": {
+    "C": 1,
+    "class_weight": null,
+    "dual": false,
+    "fit_intercept": true,
+    "intercept_scaling": 1,
+    "l1_ratio": 0.0,
+    "max_iter": 3000,
+    "n_jobs": null,
+    "penalty": "deprecated",
+    "random_state": 1103,
+    "solver": "lbfgs",
+    "tol": 0.0001,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "train_rows": 122001,
+  "evaluation_rows": 30501,
+  "encoded_features": 118,
+  "timings": {
+    "preprocessing_fit_seconds": 1.0344022999925073,
+    "model_fit_seconds": 35.51678299999912,
+    "evaluation_transform_seconds": 0.13819409999996424,
+    "inference_seconds": 0.012504999991506338,
+    "fit_total_seconds": 37.735077999997884
+  },
+  "warnings": [],
+  "convergence_warning": false,
+  "iterations": [
+    551
+  ],
+  "preprocessing_sha256": "f785e4b5acc535e1464a3a3b4795af497d791b6b42bfbdf6a9ccf1b0e6c5d8a2",
+  "predictions_sha256": "824fe8db94a4ae7f1c89da7d242942a2bbb27439246d725b9b740b9b1e743637"
+}

@@ -1,0 +1,247 @@
+{
+  "status": "PASS",
+  "pilot_manifest_sha256": "3352185684615e1c7b1ee7175e21af9afca58276b6868715fa5abf93c5a9c884",
+  "verifier_sha256": "e92e7c1f4053123feaea94432e159b2a81de75237f83dcf14ff43bc742d1c04f",
+  "source_checks": {
+    "scripts/run_overlap_pilot.py": {
+      "historical_sha256": "c0baa01ccad75cfa7d91a510933a789e9429928bc49abc0b8ef86cb076373659",
+      "checkout_sha256": "c0baa01ccad75cfa7d91a510933a789e9429928bc49abc0b8ef86cb076373659",
+      "matched_variant": "exact"
+    },
+    "scripts/test_overlap_pilot.py": {
+      "historical_sha256": "3be42d152c1aaf3a85a7b9f799b1c8781595b6e17b8e6b6b49a90d5f0def82ce",
+      "checkout_sha256": "3be42d152c1aaf3a85a7b9f799b1c8781595b6e17b8e6b6b49a90d5f0def82ce",
+      "matched_variant": "exact"
+    },
+    "scripts/build_overlap_partitions.py": {
+      "historical_sha256": "0757b7c77e334fa56bea2b81ac9e43072368c3830a025b150860cb4e3b6763b3",
+      "checkout_sha256": "0757b7c77e334fa56bea2b81ac9e43072368c3830a025b150860cb4e3b6763b3",
+      "matched_variant": "exact"
+    },
+    "scripts/verify_overlap_partitions.py": {
+      "historical_sha256": "0b3e4b035407b85f6314f84adb51eaab7b07987193472cc579cdae4058dac09e",
+      "checkout_sha256": "0b3e4b035407b85f6314f84adb51eaab7b07987193472cc579cdae4058dac09e",
+      "matched_variant": "exact"
+    },
+    "scripts/audit_ton_iot_split.py": {
+      "historical_sha256": "2296d63e099022d14865f0139eda774a401113dd749661ce1447c41903aa6cca",
+      "checkout_sha256": "2296d63e099022d14865f0139eda774a401113dd749661ce1447c41903aa6cca",
+      "matched_variant": "exact"
+    },
+    "src/data/preprocess.py": {
+      "historical_sha256": "4d089224ff57c777e55bc710503470407a6bdc51b673602ec5954a3426847252",
+      "checkout_sha256": "4d089224ff57c777e55bc710503470407a6bdc51b673602ec5954a3426847252",
+      "matched_variant": "exact"
+    },
+    "src/utils/paths.py": {
+      "historical_sha256": "184145e7d723850d9bddb791f614b784203e348903dbc31d4823f7f98293f2b8",
+      "checkout_sha256": "184145e7d723850d9bddb791f614b784203e348903dbc31d4823f7f98293f2b8",
+      "matched_variant": "exact"
+    },
+    "config/config.yaml": {
+      "historical_sha256": "6f6f1c59dd8d793c5fa714110f10ca891f74fd459f77fb50f7fa3a579655c48c",
+      "checkout_sha256": "6f6f1c59dd8d793c5fa714110f10ca891f74fd459f77fb50f7fa3a579655c48c",
+      "matched_variant": "exact"
+    }
+  },
+  "fits_checked": [
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_A",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_A",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_B",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_B",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_601",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_601",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_701",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_701",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_809",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_809",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_907",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_907",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_1009",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "diagnostic",
+      "configuration": "fixed_C_1009",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_A",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_A",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_B",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_B",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_601",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_601",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_701",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_701",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_809",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_809",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_907",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_907",
+      "model": "random_forest",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_1009",
+      "model": "logistic_regression",
+      "status": "PASS"
+    },
+    {
+      "phase": "refit",
+      "configuration": "fixed_C_1009",
+      "model": "random_forest",
+      "status": "PASS"
+    }
+  ],
+  "metric_sets_recomputed": 56,
+  "training_executed": false,
+  "analysis": {
+    "status": "PASS",
+    "bootstrap_model_replicates_recomputed": 126,
+    "coverage_draws_recomputed": 6000,
+    "all_intervals_and_contrasts_recomputed": true,
+    "analysis_manifest_sha256": "fd9c5f9e9d4e732ef1d874992c16f79f41d7897a4b45623aabc56a299fd729c8"
+  },
+  "synthetic_tests": [
+    {
+      "script": "test_overlap_partitions.py",
+      "source_sha256": "4edb5ccff90d4c57121b0acdd60a92e3d44ad1e7cb9d6533d2e695371e6805cd",
+      "exit_code": 0,
+      "output": "...............\n----------------------------------------------------------------------\nRan 15 tests in 0.095s\n\nOK\n"
+    },
+    {
+      "script": "test_overlap_pilot.py",
+      "source_sha256": "3be42d152c1aaf3a85a7b9f799b1c8781595b6e17b8e6b6b49a90d5f0def82ce",
+      "exit_code": 0,
+      "output": "........\n----------------------------------------------------------------------\nRan 8 tests in 0.125s\n\nOK\n"
+    },
+    {
+      "script": "test_overlap_analysis.py",
+      "source_sha256": "f0a8fb47b00d9299db33b9f0e845c57352f708279863686fbb95edeec74804ec",
+      "exit_code": 0,
+      "output": ".....\n----------------------------------------------------------------------\nRan 5 tests in 0.014s\n\nOK\n"
+    }
+  ],
+  "finished_at_utc": "2026-10-27T15:29:40.136041+00:00"
+}
