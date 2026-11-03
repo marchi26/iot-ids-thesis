@@ -1,0 +1,95 @@
+{
+  "status": "completed",
+  "finished_at_utc": "2026-10-27T15:19:52.523747+00:00",
+  "elapsed_seconds": 11.643542099976912,
+  "pilot_manifest_sha256": "3352185684615e1c7b1ee7175e21af9afca58276b6868715fa5abf93c5a9c884",
+  "source_sha256": "307a30be8c9e40d68c9fdb9eca345b0dac9dd40d4eb82b528935d33fef65fff0",
+  "python": "3.11.9",
+  "packages": {
+    "numpy": "2.4.6",
+    "pandas": "3.0.3",
+    "scipy": "1.17.1"
+  },
+  "rng": "PCG64",
+  "model_order": [
+    [
+      "logistic_regression",
+      "fixed_A"
+    ],
+    [
+      "logistic_regression",
+      "fixed_B"
+    ],
+    [
+      "logistic_regression",
+      "fixed_C_601"
+    ],
+    [
+      "logistic_regression",
+      "fixed_C_701"
+    ],
+    [
+      "logistic_regression",
+      "fixed_C_809"
+    ],
+    [
+      "logistic_regression",
+      "fixed_C_907"
+    ],
+    [
+      "logistic_regression",
+      "fixed_C_1009"
+    ],
+    [
+      "random_forest",
+      "fixed_A"
+    ],
+    [
+      "random_forest",
+      "fixed_B"
+    ],
+    [
+      "random_forest",
+      "fixed_C_601"
+    ],
+    [
+      "random_forest",
+      "fixed_C_701"
+    ],
+    [
+      "random_forest",
+      "fixed_C_809"
+    ],
+    [
+      "random_forest",
+      "fixed_C_907"
+    ],
+    [
+      "random_forest",
+      "fixed_C_1009"
+    ]
+  ],
+  "replicates": 2000,
+  "seed": 1301,
+  "subgroup_order": [
+    "all",
+    "exposed",
+    "non_exposed"
+  ],
+  "metrics": [
+    "macro_f1",
+    "balanced_accuracy",
+    "fpr",
+    "fnr"
+  ],
+  "unit": "group_id; all rows retained per sampled group; shared draws across 14 refit predictions",
+  "interval": "paired percentile 95%; missing-class draws excluded and counted, not replaced",
+  "artifacts_sha256": {
+    "bootstrap_coverage.csv": "b90c858fdc6c455ec84d3522b41e980684d0221fe57430740fd743682bcf2304",
+    "bootstrap_replicates.csv.gz": "65d7183252ef69a14ef9888e014aa88b5e78865bdd65e0834431aafdbb9f0409",
+    "control_summary.csv": "6a2b32113fe7d2e113409c2bc522056ca24de01a4b11aab66bed82446e3de660",
+    "metric_intervals.csv": "0b57ccbe8af89b57582f0b422f6a59a748c4b28ac35f67015a1f9245c933ae4f",
+    "paired_comparisons.csv": "b533291d672ace33ef1ade84317bd04264fd0862852fa462d17e9bb62f667071",
+    "report.md": "372eb232ff555873f6bc8e45d819d2967853dcd92cfbb77c59a7a68c3ad8e356"
+  }
+}
