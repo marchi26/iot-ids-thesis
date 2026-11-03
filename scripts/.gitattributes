@@ -6,3 +6,5 @@ test_overlap_pilot.py text eol=lf
 analyze_overlap_pilot.py text eol=lf
 verify_overlap_pilot.py text eol=lf
 test_overlap_analysis.py text eol=lf
+explain_overlap_errors.py text eol=lf
+test_overlap_errors.py text eol=lf
